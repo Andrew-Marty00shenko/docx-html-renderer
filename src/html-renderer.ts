@@ -270,6 +270,15 @@ export class HtmlRenderer {
 
     let hasOversizeElement = false;
 
+    // Calculate available height more accurately by considering footnotes
+    const existingFootnotes = section.querySelector("#footnote");
+    let footnoteHeight = 0;
+    if (existingFootnotes) {
+      footnoteHeight = pxToPt(getComputedStyles(existingFootnotes, "height"));
+    }
+
+    const adjustedAvailableHeight = availableHeight - footnoteHeight;
+
     for (let index = 0; index < article.children.length; index++) {
       const articleChildNode = article.children[index] as HTMLElement;
 
@@ -348,7 +357,7 @@ export class HtmlRenderer {
 
       newSection.appendChild(newArticle);
 
-      const footnotesElements = section.querySelectorAll("sup");
+      const footnotesElements = section.querySelectorAll("sup[id^='footnote-']");
 
       /** removing is not existing footnote elements */
       if (footnotesElements.length === 0) {
@@ -367,6 +376,11 @@ export class HtmlRenderer {
       /** rendering footnotes in a new section */
       if (this.options.renderFootnotes && footnotesIds.length > 0) {
         this.renderNotes(footnotesIds, this.footnoteMap, newSection);
+      }
+
+      /** re-render footnotes for current section with only visible footnotes */
+      if (this.options.renderFootnotes) {
+        this.renderVisibleFootnotes(section);
       }
 
       if (this.options.renderFooters) {
@@ -412,6 +426,9 @@ export class HtmlRenderer {
         modifiedSection.style.minHeight = modifiedSection.style.height;
         modifiedSection.style.height = "";
 
+        // Ensure proper spacing after modification
+        this.cleanupExcessiveSpacing(modifiedSection);
+
         newSectionElements[sectionIndex] = modifiedSection;
       }
 
@@ -428,7 +445,41 @@ export class HtmlRenderer {
       bodyContainer.appendChild(newWrapper);
 
       this.renderChildSections(filteredNewSections, bodyContainer, sectionsProps);
+
+      // Fix spacing issues after breaking
+      this.fixSpacingAfterBreak(filteredNewSections);
     }
+
+    // Re-render footnotes for all sections to ensure they match visible content
+    if (this.options.renderFootnotes) {
+      sections.forEach((section) => {
+        this.renderVisibleFootnotes(section);
+      });
+    }
+  }
+
+  fixSpacingAfterBreak(sections: HTMLElement[]) {
+    sections.forEach((section) => {
+      const article = section.querySelector("article");
+      if (!article) return;
+
+      // Remove excessive spacing between elements
+      const elements = article.children;
+      for (let i = 0; i < elements.length - 1; i++) {
+        const current = elements[i] as HTMLElement;
+        const next = elements[i + 1] as HTMLElement;
+
+        if (current && next) {
+          const currentBottom = current.offsetTop + current.offsetHeight;
+          const nextTop = next.offsetTop;
+
+          // If there's excessive space between elements, reduce it
+          if (nextTop - currentBottom > 50) {
+            next.style.marginTop = "8px";
+          }
+        }
+      }
+    });
   }
 
   renderChildSections(
@@ -716,6 +767,7 @@ export class HtmlRenderer {
       }
 
       if (this.options.renderFootnotes) {
+        // Render footnotes for current page
         this.renderNotes(this.currentFootnoteIds, this.footnoteMap, pageElement);
       }
 
@@ -737,6 +789,13 @@ export class HtmlRenderer {
       prevProps = props;
 
       sectionsProps.push(props);
+    }
+
+    // Ensure footnotes are properly rendered for each section
+    if (this.options.renderFootnotes) {
+      result.forEach((section) => {
+        this.renderVisibleFootnotes(section);
+      });
     }
 
     return { result, sectionsProps };
@@ -951,6 +1010,15 @@ section.${className}>footer { z-index: 1; }
 `;
     }
 
+    // Add better spacing control for footnotes and lists
+    styleText += `
+.${className} #footnote { margin-top: 1em; padding-top: 0.5em; border-top: 1px solid #ccc; }
+.${className} #footnote li { margin-bottom: 0.5em; }
+.${className} ol, .${className} ul { margin-bottom: 0.5em; }
+.${className} li { margin-bottom: 0.25em; }
+.${className} p { margin-bottom: 0.5em; }
+`;
+
     return this.createStyleElement(styleText);
   }
 
@@ -1073,6 +1141,58 @@ section.${className}>footer { z-index: 1; }
 
       into.appendChild(result);
     }
+  }
+
+  renderVisibleFootnotes(section: HTMLElement) {
+    // Remove existing footnotes
+    const existingFootnotes = section.querySelector("#footnote");
+    if (existingFootnotes) {
+      existingFootnotes.remove();
+    }
+
+    // Find visible footnote references in current section
+    const visibleFootnoteRefs = section.querySelectorAll("sup[id^='footnote-']");
+    const visibleFootnoteIds = Array.from(visibleFootnoteRefs).map((ref) =>
+      (ref as HTMLElement).id.replace("footnote-", ""),
+    );
+
+    // Render only visible footnotes
+    if (visibleFootnoteIds.length > 0) {
+      this.renderNotes(visibleFootnoteIds, this.footnoteMap, section);
+    }
+
+    // Clean up excessive spacing after footnotes
+    this.cleanupExcessiveSpacing(section);
+  }
+
+  cleanupExcessiveSpacing(section: HTMLElement) {
+    const article = section.querySelector("article");
+    if (!article) return;
+
+    // Find elements that might have excessive spacing
+    const elements = article.querySelectorAll("p, li, div");
+
+    elements.forEach((element) => {
+      const computedStyle = window.getComputedStyle(element);
+      const marginBottom = parseFloat(computedStyle.marginBottom);
+      const paddingBottom = parseFloat(computedStyle.paddingBottom);
+
+      // If element has excessive bottom spacing, reduce it
+      if (marginBottom > 20) {
+        (element as HTMLElement).style.marginBottom = "8px";
+      }
+      if (paddingBottom > 20) {
+        (element as HTMLElement).style.paddingBottom = "8px";
+      }
+    });
+
+    // Remove empty paragraphs that might cause spacing issues
+    const emptyParagraphs = article.querySelectorAll("p:empty, li:empty");
+    emptyParagraphs.forEach((p) => {
+      if (p.textContent?.trim() === "" && p.children.length === 0) {
+        p.remove();
+      }
+    });
   }
 
   renderElement(elem: OpenXmlElement): Node | Node[] | null {

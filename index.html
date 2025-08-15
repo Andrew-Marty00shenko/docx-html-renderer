@@ -8,31 +8,93 @@
   </head>
   <body>
     <input id="file" type="file" accept=".docx" />
-    <select id="options" multiple size="8"></select>
+    <div id="options-container">
+      <!-- Options will be populated here -->
+    </div>
 
+    <style>
+      .option-item {
+        margin: 8px 0;
+        padding: 12px;
+        border: 1px solid #e1e5e9;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+      }
+      .option-item:hover {
+        border-color: #007bff;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+      }
+      .option-item label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      .option-item input[type="checkbox"] {
+        margin: 0;
+        width: 18px;
+        height: 18px;
+        accent-color: #007bff;
+      }
+      .option-item span {
+        font-weight: 500;
+        color: #2c3e50;
+        font-size: 14px;
+      }
+      #options-container {
+        margin: 20px 0;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+      }
+      #file {
+        margin: 20px 0;
+        padding: 12px;
+        border: 2px dashed #007bff;
+        border-radius: 8px;
+        background: #f8f9ff;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      #file:hover {
+        background: #e3f2fd;
+        border-color: #0056b3;
+      }
+    </style>
     <script>
       const fileInput = document.getElementById("file");
-      const optionsSelect = document.getElementById("options");
+      const optionsContainer = document.getElementById("options-container");
 
       const options = { ...docx.defaultOptions };
 
-      // fill select with boolean options
+      // fill container with checkbox options
       Object.keys(options)
         .filter((k) => typeof options[k] === "boolean")
         .forEach((k) => {
-          const opt = document.createElement("option");
-          opt.value = k;
-          opt.textContent = `${k}: ${options[k] ? "on" : "off"}`;
-          opt.selected = !!options[k];
-          optionsSelect.appendChild(opt);
+          const opt = document.createElement("div");
+          opt.className = "option-item";
+          opt.innerHTML = `
+            <label>
+              <input type="checkbox" value="${k}" ${options[k] ? "checked" : ""}>
+              <span>${k}</span>
+            </label>
+          `;
+          optionsContainer.appendChild(opt);
         });
 
-      optionsSelect.addEventListener("change", () => {
-        for (const opt of Array.from(optionsSelect.options)) {
-          options[opt.value] = opt.selected;
-          opt.textContent = `${opt.value}: ${opt.selected ? "on" : "off"}`;
+      // handle checkbox changes
+      optionsContainer.addEventListener("change", (e) => {
+        if (e.target.type === "checkbox") {
+          const key = e.target.value;
+          options[key] = e.target.checked;
+          if (currentBlob) render(currentBlob);
         }
-        if (currentBlob) render(currentBlob);
       });
 
       let currentBlob = null;
