@@ -14,12 +14,7 @@
     "esModuleInterop": true,
     "target": "ES2020",
     "noEmit": true,
-    "lib": [
-      "ES2017",
-      "dom"
-    ],
+    "lib": ["ES2017", "dom"]
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
