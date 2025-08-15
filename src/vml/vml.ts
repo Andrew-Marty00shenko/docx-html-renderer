@@ -17,7 +17,7 @@ export class VmlElement extends OpenXmlElementBase {
 }
 
 export function parseVmlElement(elem: Element, parser: DocumentParser): VmlElement {
-  var result = new VmlElement();
+  const result = new VmlElement();
 
   switch (elem.localName) {
     case "rect":

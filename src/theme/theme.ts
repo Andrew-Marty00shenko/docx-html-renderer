@@ -23,10 +23,10 @@ export interface DmlFormInfo {
 }
 
 export function parseTheme(elem: Element, xml: XmlParser) {
-  var result = new DmlTheme();
-  var themeElements = xml.element(elem, "themeElements");
+  const result = new DmlTheme();
+  const themeElements = xml.element(elem, "themeElements");
 
-  for (let el of xml.elements(themeElements)) {
+  for (const el of xml.elements(themeElements)) {
     switch (el.localName) {
       case "clrScheme":
         result.colorScheme = parseColorScheme(el, xml);
@@ -41,14 +41,14 @@ export function parseTheme(elem: Element, xml: XmlParser) {
 }
 
 export function parseColorScheme(elem: Element, xml: XmlParser) {
-  var result: DmlColorScheme = {
+  const result: DmlColorScheme = {
     name: xml.attr(elem, "name"),
     colors: {},
   };
 
-  for (let el of xml.elements(elem)) {
-    var srgbClr = xml.element(el, "srgbClr");
-    var sysClr = xml.element(el, "sysClr");
+  for (const el of xml.elements(elem)) {
+    const srgbClr = xml.element(el, "srgbClr");
+    const sysClr = xml.element(el, "sysClr");
 
     if (srgbClr) {
       result.colors[el.localName] = xml.attr(srgbClr, "val");
@@ -61,11 +61,11 @@ export function parseColorScheme(elem: Element, xml: XmlParser) {
 }
 
 export function parseFontScheme(elem: Element, xml: XmlParser) {
-  var result: DmlFontScheme = {
+  const result: DmlFontScheme = {
     name: xml.attr(elem, "name"),
   } as DmlFontScheme;
 
-  for (let el of xml.elements(elem)) {
+  for (const el of xml.elements(elem)) {
     switch (el.localName) {
       case "majorFont":
         result.majorFont = parseFontInfo(el, xml);

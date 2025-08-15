@@ -37,9 +37,9 @@ export interface ParagraphNumbering {
 }
 
 export function parseParagraphProperties(elem: Element, xml: XmlParser): ParagraphProperties {
-  let result = <ParagraphProperties>{};
+  const result = {} as ParagraphProperties;
 
-  for (let el of xml.elements(elem)) {
+  for (const el of xml.elements(elem)) {
     parseParagraphProperty(el, result, xml);
   }
 
@@ -108,18 +108,18 @@ export function parseParagraphProperty(elem: Element, props: ParagraphProperties
 export function parseTabs(elem: Element, xml: XmlParser): ParagraphTab[] {
   return xml.elements(elem, "tab").map(
     (e) =>
-      <ParagraphTab>{
+      ({
         position: xml.lengthAttr(e, "pos"),
         leader: xml.attr(e, "leader"),
         style: xml.attr(e, "val"),
-      },
+      } as ParagraphTab),
   );
 }
 
 export function parseNumbering(elem: Element, xml: XmlParser): ParagraphNumbering {
-  var result = <ParagraphNumbering>{};
+  const result = {} as ParagraphNumbering;
 
-  for (let e of xml.elements(elem)) {
+  for (const e of xml.elements(elem)) {
     switch (e.localName) {
       case "numId":
         result.id = xml.attr(e, "val");

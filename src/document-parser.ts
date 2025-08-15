@@ -92,9 +92,9 @@ export class DocumentParser {
   }
 
   parseNotes(xmlDoc: Element, elemName: string, elemClass: any): any[] {
-    var result = [];
+    const result = [];
 
-    for (let el of xml.elements(xmlDoc, elemName)) {
+    for (const el of xml.elements(xmlDoc, elemName)) {
       const node = new elemClass();
       node.id = xml.attr(el, "id");
       node.noteType = xml.attr(el, "type");
@@ -106,9 +106,9 @@ export class DocumentParser {
   }
 
   parseComments(xmlDoc: Element): any[] {
-    var result = [];
+    const result = [];
 
-    for (let el of xml.elements(xmlDoc, "comment")) {
+    for (const el of xml.elements(xmlDoc, "comment")) {
       const item = new WmlComment();
       item.id = xml.attr(el, "id");
       item.author = xml.attr(el, "author");
@@ -122,9 +122,9 @@ export class DocumentParser {
   }
 
   parseDocumentFile(xmlDoc: Element): DocumentElement {
-    var xbody = xml.element(xmlDoc, "body");
-    var background = xml.element(xmlDoc, "background");
-    var sectPr = xml.element(xbody, "sectPr");
+    const xbody = xml.element(xmlDoc, "body");
+    const background = xml.element(xmlDoc, "background");
+    const sectPr = xml.element(xbody, "sectPr");
 
     return {
       type: DomType.Document,
@@ -135,8 +135,8 @@ export class DocumentParser {
   }
 
   parseBackground(elem: Element): any {
-    var result = {};
-    var color = xmlUtil.colorAttr(elem, "color");
+    const result = {};
+    const color = xmlUtil.colorAttr(elem, "color");
 
     if (color) {
       result["background-color"] = color;
@@ -146,9 +146,9 @@ export class DocumentParser {
   }
 
   parseBodyElements(element: Element): OpenXmlElement[] {
-    var children = [];
+    const children = [];
 
-    for (let elem of xml.elements(element)) {
+    for (const elem of xml.elements(element)) {
       switch (elem.localName) {
         case "p":
           children.push(this.parseParagraph(elem));
@@ -172,7 +172,7 @@ export class DocumentParser {
   }
 
   parseStylesFile(xstyles: Element): IDomStyle[] {
-    var result = [];
+    const result = [];
 
     xmlUtil.foreach(xstyles, (n) => {
       switch (n.localName) {
@@ -190,13 +190,13 @@ export class DocumentParser {
   }
 
   parseDefaultStyles(node: Element): IDomStyle {
-    var result = <IDomStyle>{
+    const result = {
       id: null,
       name: null,
       target: null,
       basedOn: null,
       styles: [],
-    };
+    } as IDomStyle;
 
     xmlUtil.foreach(node, (c) => {
       switch (c.localName) {
@@ -226,7 +226,7 @@ export class DocumentParser {
   }
 
   parseStyle(node: Element): IDomStyle {
-    var result = <IDomStyle>{
+    const result = {
       id: xml.attr(node, "styleId"),
       isDefault: xml.boolAttr(node, "default"),
       name: null,
@@ -234,7 +234,7 @@ export class DocumentParser {
       basedOn: null,
       styles: [],
       linked: null,
-    };
+    } as IDomStyle;
 
     switch (xml.attr(node, "type")) {
       case "paragraph":
@@ -296,7 +296,7 @@ export class DocumentParser {
           break;
 
         case "tblStylePr":
-          for (let s of this.parseTableStyle(n)) result.styles.push(s);
+          for (const s of this.parseTableStyle(n)) result.styles.push(s);
           break;
 
         case "rsid":
@@ -318,11 +318,11 @@ export class DocumentParser {
   }
 
   parseTableStyle(node: Element): IDomSubStyle[] {
-    var result = [];
+    const result = [];
 
-    var type = xml.attr(node, "type");
-    var selector = "";
-    var modificator = "";
+    const type = xml.attr(node, "type");
+    let selector = "";
+    let modificator = "";
 
     switch (type) {
       case "firstRow":
@@ -394,9 +394,9 @@ export class DocumentParser {
   }
 
   parseNumberingFile(xnums: Element): IDomNumbering[] {
-    var result = [];
-    var mapping = {};
-    var bullets = [];
+    const result = [];
+    const mapping = {};
+    const bullets = [];
 
     xmlUtil.foreach(xnums, (n) => {
       switch (n.localName) {
@@ -422,9 +422,9 @@ export class DocumentParser {
   }
 
   parseNumberingPicBullet(elem: Element): NumberingPicBullet {
-    var pict = xml.element(elem, "pict");
-    var shape = pict && xml.element(pict, "shape");
-    var imagedata = shape && xml.element(shape, "imagedata");
+    const pict = xml.element(elem, "pict");
+    const shape = pict && xml.element(pict, "shape");
+    const imagedata = shape && xml.element(shape, "imagedata");
 
     return imagedata
       ? {
@@ -436,8 +436,8 @@ export class DocumentParser {
   }
 
   parseAbstractNumbering(node: Element, bullets: any[]): IDomNumbering[] {
-    var result = [];
-    var id = xml.attr(node, "abstractNumId");
+    const result = [];
+    const id = xml.attr(node, "abstractNumId");
 
     xmlUtil.foreach(node, (n) => {
       switch (n.localName) {
@@ -451,7 +451,7 @@ export class DocumentParser {
   }
 
   parseNumberingLevel(id: string, node: Element, bullets: any[]): IDomNumbering {
-    var result: IDomNumbering = {
+    const result: IDomNumbering = {
       id: id,
       level: xml.intAttr(node, "ilvl"),
       start: 1,
@@ -507,17 +507,17 @@ export class DocumentParser {
   }
 
   parseInserted(node: Element, parentParser: Function): OpenXmlElement {
-    return <OpenXmlElement>{
+    return {
       type: DomType.Inserted,
       children: parentParser(node)?.children ?? [],
-    };
+    } as OpenXmlElement;
   }
 
   parseDeleted(node: Element, parentParser: Function): OpenXmlElement {
-    return <OpenXmlElement>{
+    return {
       type: DomType.Deleted,
       children: parentParser(node)?.children ?? [],
-    };
+    } as OpenXmlElement;
   }
 
   parseAltChunk(node: Element): WmlAltChunk {
@@ -525,9 +525,9 @@ export class DocumentParser {
   }
 
   parseParagraph(node: Element): OpenXmlElement {
-    var result = <WmlParagraph>{ type: DomType.Paragraph, children: [] };
+    const result = { type: DomType.Paragraph, children: [] } as WmlParagraph;
 
-    for (let el of xml.elements(node)) {
+    for (const el of xml.elements(node)) {
       switch (el.localName) {
         case "pPr":
           this.parseParagraphProperties(el, result);
@@ -613,17 +613,17 @@ export class DocumentParser {
   }
 
   parseFrame(node: Element, paragraph: WmlParagraph) {
-    var dropCap = xml.attr(node, "dropCap");
+    const dropCap = xml.attr(node, "dropCap");
 
     if (dropCap == "drop") paragraph.cssStyle["float"] = "left";
   }
 
   parseHyperlink(node: Element, parent?: OpenXmlElement): WmlHyperlink {
-    var result: WmlHyperlink = <WmlHyperlink>{
+    const result: WmlHyperlink = {
       type: DomType.Hyperlink,
       parent: parent,
       children: [],
-    };
+    } as WmlHyperlink;
 
     result.anchor = xml.attr(node, "anchor");
     result.id = xml.attr(node, "id");
@@ -640,9 +640,9 @@ export class DocumentParser {
   }
 
   parseSmartTag(node: Element, parent?: OpenXmlElement): WmlSmartTag {
-    var result: WmlSmartTag = { type: DomType.SmartTag, parent, children: [] };
-    var uri = xml.attr(node, "uri");
-    var element = xml.attr(node, "element");
+    const result: WmlSmartTag = { type: DomType.SmartTag, parent, children: [] };
+    const uri = xml.attr(node, "uri");
+    const element = xml.attr(node, "element");
 
     if (uri) result.uri = uri;
 
@@ -660,24 +660,24 @@ export class DocumentParser {
   }
 
   parseRun(node: Element, parent?: OpenXmlElement): WmlRun {
-    var result: WmlRun = <WmlRun>{ type: DomType.Run, parent: parent, children: [] };
+    const result: WmlRun = { type: DomType.Run, parent: parent, children: [] } as WmlRun;
 
     xmlUtil.foreach(node, (c) => {
       c = this.checkAlternateContent(c);
 
       switch (c.localName) {
         case "t":
-          result.children.push(<WmlText>{
+          result.children.push(({
             type: DomType.Text,
             text: c.textContent,
-          }); //.replace(" ", "\u00A0"); // TODO
+          } as WmlText)); //.replace(" ", "\u00A0"); // TODO
           break;
 
         case "delText":
-          result.children.push(<WmlText>{
+          result.children.push(({
             type: DomType.DeletedText,
             text: c.textContent,
-          });
+          } as WmlText));
           break;
 
         case "commentReference":
@@ -685,30 +685,30 @@ export class DocumentParser {
           break;
 
         case "fldSimple":
-          result.children.push(<WmlFieldSimple>{
+          result.children.push(({
             type: DomType.SimpleField,
             instruction: xml.attr(c, "instr"),
             lock: xml.boolAttr(c, "lock", false),
             dirty: xml.boolAttr(c, "dirty", false),
-          });
+          } as WmlFieldSimple));
           break;
 
         case "instrText":
           result.fieldRun = true;
-          result.children.push(<WmlInstructionText>{
+          result.children.push(({
             type: DomType.Instruction,
             text: c.textContent,
-          });
+          } as WmlInstructionText));
           break;
 
         case "fldChar":
           result.fieldRun = true;
-          result.children.push(<WmlFieldChar>{
+          result.children.push(({
             type: DomType.ComplexField,
             charType: xml.attr(c, "fldCharType"),
             lock: xml.boolAttr(c, "lock", false),
             dirty: xml.boolAttr(c, "dirty", false),
-          });
+          } as WmlFieldChar));
           break;
 
         case "noBreakHyphen":
@@ -716,25 +716,25 @@ export class DocumentParser {
           break;
 
         case "br":
-          result.children.push(<WmlBreak>{
+          result.children.push(({
             type: DomType.Break,
             break: xml.attr(c, "type") || "textWrapping",
-          });
+          } as WmlBreak));
           break;
 
         case "lastRenderedPageBreak":
-          result.children.push(<WmlBreak>{
+          result.children.push(({
             type: DomType.Break,
             break: "lastRenderedPageBreak",
-          });
+          } as WmlBreak));
           break;
 
         case "sym":
-          result.children.push(<WmlSymbol>{
+          result.children.push(({
             type: DomType.Symbol,
             font: encloseFontFamily(xml.attr(c, "font")),
             char: xml.attr(c, "char"),
-          });
+          } as WmlSymbol));
           break;
 
         case "tab":
@@ -742,21 +742,21 @@ export class DocumentParser {
           break;
 
         case "footnoteReference":
-          result.children.push(<WmlNoteReference>{
+          result.children.push(({
             type: DomType.FootnoteReference,
             id: xml.attr(c, "id"),
-          });
+          } as WmlNoteReference));
           break;
 
         case "endnoteReference":
-          result.children.push(<WmlNoteReference>{
+          result.children.push(({
             type: DomType.EndnoteReference,
             id: xml.attr(c, "id"),
-          });
+          } as WmlNoteReference));
           break;
 
         case "drawing":
-          let d = this.parseDrawing(c);
+          const d = this.parseDrawing(c);
 
           if (d) result.children = [d];
           break;
@@ -784,7 +784,7 @@ export class DocumentParser {
       if (childType) {
         result.children.push(this.parseMathElement(el));
       } else if (el.localName == "r") {
-        var run = this.parseRun(el);
+        const run = this.parseRun(el);
         run.type = DomType.MmlRun;
         result.children.push(run);
       } else if (el.localName == propsTag) {
@@ -857,11 +857,11 @@ export class DocumentParser {
   checkAlternateContent(elem: Element): Element {
     if (elem.localName != "AlternateContent") return elem;
 
-    var choice = xml.element(elem, "Choice");
+    const choice = xml.element(elem, "Choice");
 
     if (choice) {
-      var requires = xml.attr(choice, "Requires");
-      var namespaceURI = elem.lookupNamespaceURI(requires);
+      const requires = xml.attr(choice, "Requires");
+      const namespaceURI = elem.lookupNamespaceURI(requires);
 
       if (supportedNamespaceURIs.includes(namespaceURI)) return choice.firstElementChild;
     }
@@ -870,7 +870,7 @@ export class DocumentParser {
   }
 
   parseDrawing(node: Element): OpenXmlElement {
-    for (var n of xml.elements(node)) {
+    for (const n of xml.elements(node)) {
       switch (n.localName) {
         case "inline":
         case "anchor":
@@ -880,8 +880,8 @@ export class DocumentParser {
   }
 
   parseDrawingWrapper(node: Element): OpenXmlElement {
-    var result = <OpenXmlElement>{ type: DomType.Drawing, children: [], cssStyle: {} };
-    var isAnchor = node.localName == "anchor";
+    const result = { type: DomType.Drawing, children: [], cssStyle: {} } as OpenXmlElement;
+    const isAnchor = node.localName == "anchor";
 
     //TODO
     // result.style["margin-left"] = xml.sizeAttr(node, "distL", SizeType.Emu);
@@ -890,13 +890,13 @@ export class DocumentParser {
     // result.style["margin-bottom"] = xml.sizeAttr(node, "distB", SizeType.Emu);
 
     let wrapType: "wrapTopAndBottom" | "wrapNone" | null = null;
-    let simplePos = xml.boolAttr(node, "simplePos");
-    let behindDoc = xml.boolAttr(node, "behindDoc");
+    const simplePos = xml.boolAttr(node, "simplePos");
+    const behindDoc = xml.boolAttr(node, "behindDoc");
 
-    let posX = { relative: "page", align: "left", offset: "0" };
-    let posY = { relative: "page", align: "top", offset: "0" };
+    const posX = { relative: "page", align: "left", offset: "0" };
+    const posY = { relative: "page", align: "top", offset: "0" };
 
-    for (var n of xml.elements(node)) {
+    for (const n of xml.elements(node)) {
       switch (n.localName) {
         case "simplePos":
           if (simplePos) {
@@ -913,9 +913,9 @@ export class DocumentParser {
         case "positionH":
         case "positionV":
           if (!simplePos) {
-            let pos = n.localName == "positionH" ? posX : posY;
-            var alignNode = xml.element(n, "align");
-            var offsetNode = xml.element(n, "posOffset");
+            const pos = n.localName == "positionH" ? posX : posY;
+            const alignNode = xml.element(n, "align");
+            const offsetNode = xml.element(n, "posOffset");
 
             pos.relative = xml.attr(n, "relativeFrom") ?? pos.relative;
 
@@ -964,9 +964,9 @@ export class DocumentParser {
   }
 
   parseGraphic(elem: Element): OpenXmlElement {
-    var graphicData = xml.element(elem, "graphicData");
+    const graphicData = xml.element(elem, "graphicData");
 
-    for (let n of xml.elements(graphicData)) {
+    for (const n of xml.elements(graphicData)) {
       switch (n.localName) {
         case "pic":
           return this.parsePicture(n);
@@ -977,18 +977,18 @@ export class DocumentParser {
   }
 
   parsePicture(elem: Element): IDomImage {
-    var result = <IDomImage>{ type: DomType.Image, src: "", cssStyle: {} };
-    var blipFill = xml.element(elem, "blipFill");
-    var blip = xml.element(blipFill, "blip");
+    const result = { type: DomType.Image, src: "", cssStyle: {} } as IDomImage;
+    const blipFill = xml.element(elem, "blipFill");
+    const blip = xml.element(blipFill, "blip");
 
     result.src = xml.attr(blip, "embed");
 
-    var spPr = xml.element(elem, "spPr");
-    var xfrm = xml.element(spPr, "xfrm");
+    const spPr = xml.element(elem, "spPr");
+    const xfrm = xml.element(spPr, "xfrm");
 
     result.cssStyle["position"] = "relative";
 
-    for (var n of xml.elements(xfrm)) {
+    for (const n of xml.elements(xfrm)) {
       switch (n.localName) {
         case "ext":
           result.cssStyle["width"] = xml.lengthAttr(n, "cx", LengthUsage.Emu);
@@ -1006,7 +1006,7 @@ export class DocumentParser {
   }
 
   parseTable(node: Element): WmlTable {
-    var result: WmlTable = { type: DomType.Table, children: [] };
+    const result: WmlTable = { type: DomType.Table, children: [] };
 
     xmlUtil.foreach(node, (c) => {
       switch (c.localName) {
@@ -1028,7 +1028,7 @@ export class DocumentParser {
   }
 
   parseTableColumns(node: Element): WmlTableColumn[] {
-    var result = [];
+    const result = [];
 
     xmlUtil.foreach(node, (n) => {
       switch (n.localName) {
@@ -1093,10 +1093,10 @@ export class DocumentParser {
   }
 
   parseTablePosition(node: Element, table: WmlTable) {
-    var topFromText = xml.lengthAttr(node, "topFromText");
-    var bottomFromText = xml.lengthAttr(node, "bottomFromText");
-    var rightFromText = xml.lengthAttr(node, "rightFromText");
-    var leftFromText = xml.lengthAttr(node, "leftFromText");
+    const topFromText = xml.lengthAttr(node, "topFromText");
+    const bottomFromText = xml.lengthAttr(node, "bottomFromText");
+    const rightFromText = xml.lengthAttr(node, "rightFromText");
+    const leftFromText = xml.lengthAttr(node, "leftFromText");
 
     table.cssStyle["float"] = "left";
     table.cssStyle["margin-bottom"] = values.addSize(
@@ -1109,7 +1109,7 @@ export class DocumentParser {
   }
 
   parseTableRow(node: Element): WmlTableRow {
-    var result: WmlTableRow = { type: DomType.Row, children: [] };
+    const result: WmlTableRow = { type: DomType.Row, children: [] };
 
     xmlUtil.foreach(node, (c) => {
       switch (c.localName) {
@@ -1154,7 +1154,7 @@ export class DocumentParser {
   }
 
   parseTableCell(node: Element): OpenXmlElement {
-    var result: WmlTableCell = { type: DomType.Cell, children: [] };
+    const result: WmlTableCell = { type: DomType.Cell, children: [] };
 
     xmlUtil.foreach(node, (c) => {
       switch (c.localName) {
@@ -1412,7 +1412,7 @@ export class DocumentParser {
   }
 
   parseUnderline(node: Element, style: Record<string, string>) {
-    var val = xml.attr(node, "val");
+    const val = xml.attr(node, "val");
 
     if (val == null) return;
 
@@ -1457,27 +1457,27 @@ export class DocumentParser {
         break;
     }
 
-    var col = xmlUtil.colorAttr(node, "color");
+    const col = xmlUtil.colorAttr(node, "color");
 
     if (col) style["text-decoration-color"] = col;
   }
 
   parseFont(node: Element, style: Record<string, string>) {
-    var ascii = xml.attr(node, "ascii");
-    var asciiTheme = values.themeValue(node, "asciiTheme");
-    var eastAsia = xml.attr(node, "eastAsia");
-    var fonts = [ascii, asciiTheme, eastAsia].filter((x) => x).map((x) => encloseFontFamily(x));
+    const ascii = xml.attr(node, "ascii");
+    const asciiTheme = values.themeValue(node, "asciiTheme");
+    const eastAsia = xml.attr(node, "eastAsia");
+    const fonts = [ascii, asciiTheme, eastAsia].filter((x) => x).map((x) => encloseFontFamily(x));
 
     if (fonts.length > 0) style["font-family"] = [...new Set(fonts)].join(", ");
   }
 
   parseIndentation(node: Element, style: Record<string, string>) {
-    var firstLine = xml.lengthAttr(node, "firstLine");
-    var hanging = xml.lengthAttr(node, "hanging");
-    var left = xml.lengthAttr(node, "left");
-    var start = xml.lengthAttr(node, "start");
-    var right = xml.lengthAttr(node, "right");
-    var end = xml.lengthAttr(node, "end");
+    const firstLine = xml.lengthAttr(node, "firstLine");
+    const hanging = xml.lengthAttr(node, "hanging");
+    const left = xml.lengthAttr(node, "left");
+    const start = xml.lengthAttr(node, "start");
+    const right = xml.lengthAttr(node, "right");
+    const end = xml.lengthAttr(node, "end");
 
     if (firstLine) style["text-indent"] = firstLine;
     if (hanging) style["text-indent"] = `-${hanging}`;
@@ -1486,10 +1486,10 @@ export class DocumentParser {
   }
 
   parseSpacing(node: Element, style: Record<string, string>) {
-    var before = xml.lengthAttr(node, "before");
-    var after = xml.lengthAttr(node, "after");
-    var line = xml.intAttr(node, "line", null);
-    var lineRule = xml.attr(node, "lineRule");
+    const before = xml.lengthAttr(node, "before");
+    const after = xml.lengthAttr(node, "after");
+    const line = xml.intAttr(node, "line", null);
+    const lineRule = xml.attr(node, "lineRule");
 
     if (before) style["margin-top"] = before;
     if (after) style["margin-bottom"] = after;
@@ -1595,10 +1595,10 @@ const knownColors = [
 
 class xmlUtil {
   static foreach(node: Element, cb: (n: Element) => void) {
-    for (var i = 0; i < node.childNodes.length; i++) {
-      let n = node.childNodes[i];
+    for (let i = 0; i < node.childNodes.length; i++) {
+      const n = node.childNodes[i];
 
-      if (n.nodeType == Node.ELEMENT_NODE) cb(<Element>n);
+      if (n.nodeType == Node.ELEMENT_NODE) cb((n as Element));
     }
   }
 
@@ -1606,9 +1606,9 @@ class xmlUtil {
     node: Element,
     attrName: string,
     defValue: string = null,
-    autoColor: string = "black",
+    autoColor = "black",
   ) {
-    var v = xml.attr(node, attrName);
+    const v = xml.attr(node, attrName);
 
     if (v) {
       if (v == "auto") {
@@ -1620,7 +1620,7 @@ class xmlUtil {
       return `#${v}`;
     }
 
-    var themeColor = xml.attr(node, "themeColor");
+    const themeColor = xml.attr(node, "themeColor");
 
     return themeColor ? `var(--docx-${themeColor}-color)` : defValue;
   }
@@ -1632,12 +1632,12 @@ class xmlUtil {
 
 class values {
   static themeValue(c: Element, attr: string) {
-    var val = xml.attr(c, attr);
+    const val = xml.attr(c, attr);
     return val ? `var(--docx-${val}-font)` : null;
   }
 
   static valueOfSize(c: Element, attr: string) {
-    var type = LengthUsage.Dxa;
+    let type = LengthUsage.Dxa;
 
     switch (xml.attr(c, "type")) {
       case "dxa":
@@ -1657,12 +1657,12 @@ class values {
   }
 
   static valueOfBorder(c: Element) {
-    var type = values.parseBorderType(xml.attr(c, "val"));
+    const type = values.parseBorderType(xml.attr(c, "val"));
 
     if (type == "none") return "none";
 
-    var color = xmlUtil.colorAttr(c, "color");
-    var size = xml.lengthAttr(c, "sz", LengthUsage.Border);
+    const color = xmlUtil.colorAttr(c, "color");
+    const size = xml.lengthAttr(c, "sz", LengthUsage.Border);
 
     return `${size} ${type} ${color == "auto" ? autos.borderColor : color}`;
   }
@@ -1729,7 +1729,7 @@ class values {
   }
 
   static valueOfTblLayout(c: Element) {
-    var type = xml.attr(c, "val");
+    const type = xml.attr(c, "val");
     return type == "fixed" ? "fixed" : "auto";
   }
 
@@ -1754,7 +1754,7 @@ class values {
   }
 
   static valueOfJc(c: Element) {
-    var type = xml.attr(c, "val");
+    const type = xml.attr(c, "val");
 
     switch (type) {
       case "start":
@@ -1772,8 +1772,8 @@ class values {
     return type;
   }
 
-  static valueOfVertAlign(c: Element, asTagName: boolean = false) {
-    var type = xml.attr(c, "val");
+  static valueOfVertAlign(c: Element, asTagName = false) {
+    const type = xml.attr(c, "val");
 
     switch (type) {
       case "subscript":
@@ -1786,7 +1786,7 @@ class values {
   }
 
   static valueOfTextAlignment(c: Element) {
-    var type = xml.attr(c, "val");
+    const type = xml.attr(c, "val");
 
     switch (type) {
       case "auto":

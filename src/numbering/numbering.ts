@@ -50,13 +50,13 @@ export interface NumberingBulletPicture {
 }
 
 export function parseNumberingPart(elem: Element, xml: XmlParser): NumberingPartProperties {
-  let result: NumberingPartProperties = {
+  const result: NumberingPartProperties = {
     numberings: [],
     abstractNumberings: [],
     bulletPictures: [],
   };
 
-  for (let e of xml.elements(elem)) {
+  for (const e of xml.elements(elem)) {
     switch (e.localName) {
       case "num":
         result.numberings.push(parseNumbering(e, xml));
@@ -74,12 +74,12 @@ export function parseNumberingPart(elem: Element, xml: XmlParser): NumberingPart
 }
 
 export function parseNumbering(elem: Element, xml: XmlParser): Numbering {
-  let result = <Numbering>{
+  const result = {
     id: xml.attr(elem, "numId"),
     overrides: [],
-  };
+  } as Numbering;
 
-  for (let e of xml.elements(elem)) {
+  for (const e of xml.elements(elem)) {
     switch (e.localName) {
       case "abstractNumId":
         result.abstractId = xml.attr(e, "val");
@@ -94,12 +94,12 @@ export function parseNumbering(elem: Element, xml: XmlParser): Numbering {
 }
 
 export function parseAbstractNumbering(elem: Element, xml: XmlParser): AbstractNumbering {
-  let result = <AbstractNumbering>{
+  const result = {
     id: xml.attr(elem, "abstractNumId"),
     levels: [],
-  };
+  } as AbstractNumbering;
 
-  for (let e of xml.elements(elem)) {
+  for (const e of xml.elements(elem)) {
     switch (e.localName) {
       case "name":
         result.name = xml.attr(e, "val");
@@ -123,11 +123,11 @@ export function parseAbstractNumbering(elem: Element, xml: XmlParser): AbstractN
 }
 
 export function parseNumberingLevel(elem: Element, xml: XmlParser): NumberingLevel {
-  let result = <NumberingLevel>{
+  const result = {
     level: xml.intAttr(elem, "ilvl"),
-  };
+  } as NumberingLevel;
 
-  for (let e of xml.elements(elem)) {
+  for (const e of xml.elements(elem)) {
     switch (e.localName) {
       case "start":
         result.start = xml.attr(e, "val");
@@ -166,11 +166,11 @@ export function parseNumberingLevelOverrride(
   elem: Element,
   xml: XmlParser,
 ): NumberingLevelOverride {
-  let result = <NumberingLevelOverride>{
+  const result = {
     level: xml.intAttr(elem, "ilvl"),
-  };
+  } as NumberingLevelOverride;
 
-  for (let e of xml.elements(elem)) {
+  for (const e of xml.elements(elem)) {
     switch (e.localName) {
       case "startOverride":
         result.start = xml.intAttr(e, "val");
@@ -186,9 +186,9 @@ export function parseNumberingLevelOverrride(
 
 export function parseNumberingBulletPicture(elem: Element, xml: XmlParser): NumberingBulletPicture {
   //TODO
-  var pict = xml.element(elem, "pict");
-  var shape = pict && xml.element(pict, "shape");
-  var imagedata = shape && xml.element(shape, "imagedata");
+  const pict = xml.element(elem, "pict");
+  const shape = pict && xml.element(pict, "shape");
+  const imagedata = shape && xml.element(shape, "imagedata");
 
   return imagedata
     ? {

@@ -29,9 +29,9 @@ export function parseBorder(elem: Element, xml: XmlParser): Border {
 }
 
 export function parseBorders(elem: Element, xml: XmlParser): Borders {
-  var result = <Borders>{};
+  const result = {} as Borders;
 
-  for (let e of xml.elements(elem)) {
+  for (const e of xml.elements(elem)) {
     switch (e.localName) {
       case "left":
         result.left = parseBorder(e, xml);

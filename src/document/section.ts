@@ -80,9 +80,9 @@ export function parseSectionProperties(
   elem: Element,
   xml: XmlParser = globalXmlParser,
 ): SectionProperties {
-  var section = <SectionProperties>{};
+  const section = {} as SectionProperties;
 
-  for (let e of xml.elements(elem)) {
+  for (const e of xml.elements(elem)) {
     switch (e.localName) {
       case "pgSz":
         section.pageSize = {
@@ -145,10 +145,10 @@ function parseColumns(elem: Element, xml: XmlParser): Columns {
     equalWidth: xml.boolAttr(elem, "equalWidth", true),
     columns: xml.elements(elem, "col").map(
       (e) =>
-        <Column>{
+        ({
           width: xml.lengthAttr(e, "w"),
           space: xml.lengthAttr(e, "space"),
-        },
+        } as Column),
     ),
   };
 }

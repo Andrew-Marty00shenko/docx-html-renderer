@@ -11,9 +11,9 @@ export interface WmlRun extends OpenXmlElement, RunProperties {
 export interface RunProperties extends CommonProperties {}
 
 export function parseRunProperties(elem: Element, xml: XmlParser): RunProperties {
-  let result = <RunProperties>{};
+  const result = {} as RunProperties;
 
-  for (let el of xml.elements(elem)) {
+  for (const el of xml.elements(elem)) {
     parseRunProperty(el, result, xml);
   }
 

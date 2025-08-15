@@ -15,9 +15,9 @@ export interface NoteProperties {
 }
 
 export function parseSettings(elem: Element, xml: XmlParser) {
-  var result = {} as WmlSettings;
+  const result = {} as WmlSettings;
 
-  for (let el of xml.elements(elem)) {
+  for (const el of xml.elements(elem)) {
     switch (el.localName) {
       case "defaultTabStop":
         result.defaultTabStop = xml.lengthAttr(el, "val");
@@ -38,11 +38,11 @@ export function parseSettings(elem: Element, xml: XmlParser) {
 }
 
 export function parseNoteProperties(elem: Element, xml: XmlParser) {
-  var result = {
+  const result = {
     defaultNoteIds: [],
   } as NoteProperties;
 
-  for (let el of xml.elements(elem)) {
+  for (const el of xml.elements(elem)) {
     switch (el.localName) {
       case "numFmt":
         result.nummeringFormat = xml.attr(el, "val");

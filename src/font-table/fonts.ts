@@ -25,12 +25,12 @@ export function parseFonts(root: Element, xml: XmlParser): FontDeclaration[] {
 }
 
 export function parseFont(elem: Element, xml: XmlParser): FontDeclaration {
-  let result = <FontDeclaration>{
+  const result = {
     name: xml.attr(elem, "name"),
     embedFontRefs: [],
-  };
+  } as FontDeclaration;
 
-  for (let el of xml.elements(elem)) {
+  for (const el of xml.elements(elem)) {
     switch (el.localName) {
       case "family":
         result.family = xml.attr(el, "val");

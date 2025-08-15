@@ -49,7 +49,7 @@ export class WordDocument {
   commentsExtendedPart: CommentsExtendedPart;
 
   static async load(blob: Blob | any, parser: DocumentParser, options: any): Promise<WordDocument> {
-    var d = new WordDocument();
+    const d = new WordDocument();
 
     d._options = options;
     d._parser = parser;
@@ -188,7 +188,7 @@ export class WordDocument {
   }
 
   findPartByRelId(id: string, basePart: Part = null) {
-    var rel = (basePart.rels ?? this.rels).find((r) => r.id == id);
+    const rel = (basePart.rels ?? this.rels).find((r) => r.id == id);
     const folder = basePart ? splitPath(basePart.path)[0] : "";
     return rel ? this.partsMap[resolvePath(rel.target, folder)] : null;
   }

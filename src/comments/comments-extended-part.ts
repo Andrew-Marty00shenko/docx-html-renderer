@@ -19,7 +19,7 @@ export class CommentsExtendedPart extends Part {
   parseXml(root: Element) {
     const xml = this._package.xmlParser;
 
-    for (let el of xml.elements(root, "commentEx")) {
+    for (const el of xml.elements(root, "commentEx")) {
       this.comments.push({
         paraId: xml.attr(el, "paraId"),
         paraIdParent: xml.attr(el, "paraIdParent"),

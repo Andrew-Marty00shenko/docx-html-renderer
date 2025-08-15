@@ -12,9 +12,9 @@ export interface CorePropsDeclaration {
 }
 
 export function parseCoreProps(root: Element, xmlParser: XmlParser): CorePropsDeclaration {
-  const result = <CorePropsDeclaration>{};
+  const result = {} as CorePropsDeclaration;
 
-  for (let el of xmlParser.elements(root)) {
+  for (const el of xmlParser.elements(root)) {
     switch (el.localName) {
       case "title":
         result.title = el.textContent;

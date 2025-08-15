@@ -1,4 +1,4 @@
-import { XmlParser } from "../parser/xml-parser";
+import type { XmlParser } from "../parser/xml-parser";
 import { clamp } from "../utils";
 
 export const ns = {
@@ -41,15 +41,15 @@ export function convertLength(val: string, usage: LengthUsageType = LengthUsage.
     return val;
   }
 
-  var num = parseInt(val) * usage.mul;
+  let num = parseInt(val) * usage.mul;
 
   if (usage.min && usage.max) num = clamp(num, usage.min, usage.max);
 
   return `${num.toFixed(2)}${usage.unit}`;
 }
 
-export function convertBoolean(v: string, defaultValue = false): boolean {
-  switch (v) {
+export function convertBoolean(val: string, defaultValue: null | boolean = false) {
+  switch (val) {
     case "1":
       return true;
     case "0":
@@ -63,11 +63,11 @@ export function convertBoolean(v: string, defaultValue = false): boolean {
     case "false":
       return false;
     default:
-      return defaultValue;
+      return Boolean(defaultValue);
   }
 }
 
-export function convertPercentage(val: string): number {
+export function convertPercentage(val: string): number | null {
   return val ? parseInt(val) / 100 : null;
 }
 
@@ -92,4 +92,37 @@ export function parseCommonProperty(
   }
 
   return true;
+}
+
+export function pxToPt(px: string, dpi = 96) {
+  return parseFloat(px) * (72 / dpi);
+}
+
+export function ptToPx(pt: string | number, dpi = 96): number {
+  const ptValue = typeof pt === "string" ? parseFloat(pt) : pt;
+  return ptValue * (dpi / 72);
+}
+
+export function getComputedStyles<Key extends keyof CSSStyleDeclaration>(
+  element: Element,
+  option: Key,
+): CSSStyleDeclaration[Key] {
+  const elementStyles = window.getComputedStyle(element);
+
+  return elementStyles[option];
+}
+
+export function calculateTotalElementHeight(element: Element) {
+  const height = pxToPt(getComputedStyles(element, "height"));
+  const marginTop = pxToPt(getComputedStyles(element, "marginTop"));
+  const marginBottom = pxToPt(getComputedStyles(element, "marginBottom"));
+  const paddingTop = pxToPt(getComputedStyles(element, "paddingTop"));
+  const paddingBottom = pxToPt(getComputedStyles(element, "paddingBottom"));
+  const borderTop = pxToPt(getComputedStyles(element, "borderTopWidth"));
+  const borderBottom = pxToPt(getComputedStyles(element, "borderBottomWidth"));
+
+  const totalElementHeight =
+    height + marginTop + marginBottom + paddingTop + paddingBottom + borderTop + borderBottom;
+
+  return totalElementHeight;
 }

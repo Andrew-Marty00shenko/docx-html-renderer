@@ -14,9 +14,9 @@ export interface ExtendedPropsDeclaration {
 }
 
 export function parseExtendedProps(root: Element, xmlParser: XmlParser): ExtendedPropsDeclaration {
-  const result = <ExtendedPropsDeclaration>{};
+  const result = {} as ExtendedPropsDeclaration;
 
-  for (let el of xmlParser.elements(root)) {
+  for (const el of xmlParser.elements(root)) {
     switch (el.localName) {
       case "Template":
         result.template = el.textContent;

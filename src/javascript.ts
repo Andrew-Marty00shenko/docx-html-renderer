@@ -62,7 +62,7 @@ export function updateTabStop(
 
   if (tab == null) return;
 
-  let width: number = 1;
+  let width = 1;
 
   if (tab.style == "right" || tab.style == "center") {
     const tabStops = Array.from(p.querySelectorAll(`.${elem.className}`));

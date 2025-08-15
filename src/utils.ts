@@ -7,9 +7,9 @@ export function encloseFontFamily(fontFamily: string): string {
 }
 
 export function splitPath(path: string): [string, string] {
-  let si = path.lastIndexOf("/") + 1;
-  let folder = si == 0 ? "" : path.substring(0, si);
-  let fileName = si == 0 ? path : path.substring(si);
+  const si = path.lastIndexOf("/") + 1;
+  const folder = si == 0 ? "" : path.substring(0, si);
+  const fileName = si == 0 ? path : path.substring(si);
 
   return [folder, fileName];
 }

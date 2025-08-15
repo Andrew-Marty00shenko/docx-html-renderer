@@ -33,11 +33,11 @@ export enum RelationshipTypes {
 export function parseRelationships(root: Element, xml: XmlParser): Relationship[] {
   return xml.elements(root).map(
     (e) =>
-      <Relationship>{
+      ({
         id: xml.attr(e, "Id"),
         type: xml.attr(e, "Type"),
         target: xml.attr(e, "Target"),
         targetMode: xml.attr(e, "TargetMode"),
-      },
+      } as Relationship),
   );
 }
