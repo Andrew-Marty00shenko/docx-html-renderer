@@ -18,16 +18,26 @@
   },
   "type": "module",
   "files": [
-    "dist"
+    "lib"
   ],
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && tsc -p tsconfig.types.json",
     "eslint": "eslint . --max-warnings 0",
     "eslint:fix": "eslint . --fix --max-warnings 0",
     "typecheck": "tsc --pretty",
     "prepare": "install-peers && husky install",
     "prepublishOnly": "npm run eslint && npm run build"
+  },
+  "main": "lib/docx2html.js",
+  "module": "lib/docx2html.mjs",
+  "types": "lib/docx2html.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/docx2html.d.ts",
+      "require": "./lib/docx2html.js",
+      "import": "./lib/docx2html.mjs"
+    }
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.4",

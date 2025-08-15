@@ -4,4 +4,5 @@ bin
 obj
 docx.js.map
 *.log
-в
+dist
+lib

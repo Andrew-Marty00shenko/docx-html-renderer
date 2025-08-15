@@ -1,4 +1,3 @@
- 
 import type { WmlComment, WmlCommentRangeStart, WmlCommentReference } from "./comments/elements";
 import type { Part } from "./common/part";
 import type { WmlBookmarkStart } from "./document/bookmarks";
@@ -31,7 +30,7 @@ import type { BaseHeaderFooterPart } from "./header-footer/parts";
 import type { WmlBaseNote, WmlFootnote } from "./notes/elements";
 import type { ThemePart } from "./theme/theme-part";
 import type { VmlElement } from "./vml/vml";
-import type { Options } from "./docx-preview";
+import type { Options } from "./docx2html";
 import { computePixelToPoint, updateTabStop } from "./javascript";
 import { asArray, encloseFontFamily, escapeClassName, isString, keyBy, mergeDeep } from "./utils";
 import type { WordDocument } from "./word-document";
