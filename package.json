@@ -1,0 +1,59 @@
+{
+  "name": "docx2html",
+  "version": "0.0.1",
+  "description": "Lightweight React Library to convert DOCX to HTML",
+  "keywords": [
+    "react",
+    "docx",
+    "ooxml",
+    "hooks",
+    "microsoft",
+    "html"
+  ],
+  "author": "<andrew.marty00shenko@gmail.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Andrew-Marty00shenko/docx2html"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "eslint": "eslint . --max-warnings 0",
+    "eslint:fix": "eslint . --fix --max-warnings 0",
+    "typecheck": "tsc --pretty",
+    "prepare": "install-peers && husky install",
+    "prepublishOnly": "npm run eslint && npm run build"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.21.4",
+    "@types/react": "^18.0.33",
+    "@vitejs/plugin-react": "^3.1.0",
+    
+    "@eslint/js": "9.27.0",
+    "eslint": "9.27.0",
+    "eslint-config-prettier": "9.1.0",
+    "husky": "^8.0.3",
+    "install-peers-cli": "^2.2.0",
+    "jszip": "3.10.1",
+    
+    "knip": "5.46.4",
+    "lint-staged": "^10.5.1",
+    "prettier": "3.3.3",
+    "typescript-eslint": "8.23.0",
+    "react-dom": "18.2.0",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.0",
+    "typescript": "5.4.5",
+    "vite": "6.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

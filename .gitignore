@@ -3,6 +3,4 @@ node_modules
 bin
 obj
 docx.js.map
-/*.json
-/*.config
 *.log
