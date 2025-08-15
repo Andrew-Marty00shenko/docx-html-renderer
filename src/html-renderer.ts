@@ -348,26 +348,7 @@ export class HtmlRenderer {
 
       newSection.appendChild(newArticle);
 
-      const footnotesElements = section.querySelectorAll("sup");
-
-      /** removing is not existing footnote elements */
-      if (footnotesElements.length === 0) {
-        const footnotes = sections[sectionIndex - 1]?.querySelector(`#footnote`);
-
-        if (footnotes) {
-          sections[sectionIndex - 1].removeChild(footnotes);
-        }
-      }
-
-      const footnotesIds =
-        footnotesElements.length > 0
-          ? Array.from(footnotesElements).map((footnote) => footnote.id.replace("footnote-", ""))
-          : [];
-
-      /** rendering footnotes in a new section */
-      if (this.options.renderFootnotes && footnotesIds.length > 0) {
-        this.renderNotes(footnotesIds, this.footnoteMap, newSection);
-      }
+      // Footnotes will be rendered in the main rendering logic where the sup elements are located
 
       if (this.options.renderFooters) {
         const footer = this.renderHeaderFooter(
@@ -474,6 +455,43 @@ export class HtmlRenderer {
         bodyContainer,
         sectionsProps,
       });
+    });
+
+    // After breaking sections, render footnotes for each section
+    this.renderFootnotesForSections(sectionElements);
+  }
+
+  renderFootnotesForSections(sectionElements: HTMLElement[]) {
+    if (!this.options.renderFootnotes) return;
+
+    sectionElements.forEach((section, sectionIndex) => {
+      const article = Array.from(section.children).find((item) => item.localName === "article");
+      if (!article) return;
+
+      // Find all footnote references in this section
+      const footnoteRefs = article.querySelectorAll("sup[id^='footnote-']");
+      if (footnoteRefs.length === 0) return;
+
+      // Extract footnote IDs
+      const footnoteIds = Array.from(footnoteRefs).map((ref) => ref.id.replace("footnote-", ""));
+
+      // Remove existing footnotes if any
+      const existingFootnotes = section.querySelector("#footnote");
+      if (existingFootnotes) {
+        existingFootnotes.remove();
+      }
+
+      // Render footnotes for this section
+      this.renderNotes(footnoteIds, this.footnoteMap, section);
+
+      // Move footnotes before any existing footer to ensure correct order
+      const renderedFootnotes = section.querySelector("#footnote");
+      const existingFooter = section.querySelector("footer");
+
+      if (renderedFootnotes && existingFooter) {
+        // Move footnotes before footer
+        section.insertBefore(renderedFootnotes, existingFooter);
+      }
     });
   }
 
@@ -715,22 +733,8 @@ export class HtmlRenderer {
         props = sect.sectProps;
       }
 
-      if (this.options.renderFootnotes) {
-        this.renderNotes(this.currentFootnoteIds, this.footnoteMap, pageElement);
-      }
-
       if (this.options.renderEndnotes && index == length - 1) {
         this.renderNotes(this.currentEndnoteIds, this.endnoteMap, pageElement);
-      }
-
-      if (this.options.renderFooters) {
-        this.renderHeaderFooter(
-          props.footerRefs,
-          props,
-          result.length,
-          prevProps != props,
-          pageElement,
-        );
       }
 
       result.push(pageElement);

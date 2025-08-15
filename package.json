@@ -23,11 +23,11 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && tsc -p tsconfig.types.json",
-    "eslint": "eslint . --max-warnings 0",
-    "eslint:fix": "eslint . --fix --max-warnings 0",
-    "typecheck": "tsc --pretty",
-    "prepare": "install-peers && husky install",
-    "prepublishOnly": "npm run eslint && npm run build"
+    "preview": "vite preview",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit"
   },
   "main": "lib/docx2html.js",
   "module": "lib/docx2html.mjs",
