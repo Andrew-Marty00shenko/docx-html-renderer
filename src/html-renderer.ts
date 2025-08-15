@@ -464,7 +464,7 @@ export class HtmlRenderer {
   renderFootnotesForSections(sectionElements: HTMLElement[]) {
     if (!this.options.renderFootnotes) return;
 
-    sectionElements.forEach((section, sectionIndex) => {
+    sectionElements.forEach((section) => {
       const article = Array.from(section.children).find((item) => item.localName === "article");
       if (!article) return;
 
