@@ -101,13 +101,13 @@
     <script crossorigin src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
 
     <script type="module">
-      // Импортируем напрямую из TypeScript файла
+      // Import directly from TypeScript file
       import { parseAsync, renderDocument } from "./src/index.ts";
 
-      // Глобальные переменные для совместимости
+      // Global variables for compatibility
       window.docx = { parseAsync, renderDocument };
 
-      // Остальной код остается без изменений
+      // Rest of the code remains unchanged
       const fileInput = document.getElementById("fileInput");
       const renderButton = document.getElementById("renderButton");
       const output = document.getElementById("output");

@@ -1,12 +1,20 @@
-# docx2html
+# docx-html-renderer
 
-Lightweight library to render/convert DOCX to semantic HTML. Works in plain browser JavaScript (UMD) and in React/TypeScript projects (ESM + typings). Uses JSZip under the hood.
+Lightweight Js library to convert DOCX to HTML. Works in plain browser JavaScript (UMD) and in React/TypeScript projects (ESM + typings). Uses JSZip under the hood.
 
 ## Installation
 
+```bash
+npm install docx-html-renderer
 ```
-npm install docx2html
-```
+
+📦 **Available on npm**: [docx-html-renderer](https://www.npmjs.com/package/docx-html-renderer)
+
+## Requirements
+
+- **Node.js**: >= 18.0.0
+- **JSZip**: Required for DOCX file parsing
+- **Browser**: Modern browsers with ES2020 support
 
 ## Quick start (UMD)
 
@@ -14,7 +22,7 @@ npm install docx2html
 <!-- dependency: JSZip -->
 <script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
 <!-- library UMD build -->
-<script src="lib/docx2html.js"></script>
+<script src="lib/docx-html-renderer.js"></script>
 <script>
   const container = document.getElementById('container');
   const docData = /* Blob | ArrayBuffer | Uint8Array */;
@@ -32,7 +40,24 @@ npm install docx2html
 ## Usage in ESM / React + TypeScript
 
 ```ts
-import { renderAsync, parseAsync, renderDocument, defaultOptions } from "docx2html";
+import { renderAsync, parseAsync, renderDocument, defaultOptions } from "docx-html-renderer";
+
+// Basic usage
+const renderDocx = async (file: File) => {
+  const container = document.getElementById("output");
+  await renderAsync(file, container);
+};
+
+// With custom options
+const renderWithOptions = async (file: File) => {
+  const container = document.getElementById("output");
+  await renderAsync(file, container, null, {
+    className: "my-docx",
+    breakPages: true,
+    renderHeaders: true,
+    renderFooters: true,
+  });
+};
 ```
 
 ## API
@@ -92,27 +117,56 @@ By default `ignoreLastRenderedPageBreak` is `true`.
 
 The high‑level `renderAsync` API is stable. Internal parsing/rendering implementation details may change.
 
-# docx2html
+## Version
 
-Лёгкая библиотека для конвертации/рендера DOCX → HTML. Работает в нативном JS (UMD) и в React/TypeScript (ESM + типы).
+Current version: **0.0.8**
+
+## License
+
+ISC License - see [LICENSE](LICENSE) file for details.
+
+## Author
+
+**Andrew Marty00shenko** - [GitHub](https://github.com/Andrew-Marty00shenko)
+
+## Support
+
+- 📖 **Documentation**: Check the API section below
+- 🐛 **Issues**: Report bugs on [GitHub](https://github.com/Andrew-Marty00shenko/docx2html/issues)
+- ⭐ **Star**: If this library helps you, consider giving it a star!
+
+## Features
+
+- ✅ **DOCX to HTML conversion** - Convert Microsoft Word documents to semantic HTML
+- ✅ **React/TypeScript support** - Full TypeScript definitions and React integration
+- ✅ **UMD and ESM builds** - Works in browsers and Node.js environments
+- ✅ **Semantic HTML output** - Clean, accessible HTML markup
+- ✅ **Page breaks support** - Automatic and manual page break handling
+- ✅ **Headers and footers** - Document header/footer rendering
+- ✅ **Tables and formatting** - Preserve table structure and text formatting
+- ✅ **Font and style rendering** - Maintain document styling and typography
+
+# docx-html-renderer
+
+Lightweight library for DOCX → HTML conversion/rendering. Works in native JS (UMD) and React/TypeScript (ESM + types).
 
 ## Goal
 
 Goal of this project is to render/convert DOCX document into HTML document with keeping HTML semantic as much as possible.
 That means library is limited by HTML capabilities (for example Google Docs renders \*.docx document on canvas as an image).
 
-## Установка
+## Installation
 
-```
-npm install docx2html
+```bash
+npm install docx-html-renderer
 ```
 
-## Быстрый старт (UMD)
+## Quick Start (UMD)
 
 ```html
 <!--lib uses jszip-->
 <script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
-<script src="lib/docx2html.js"></script>
+<script src="lib/docx-html-renderer.js"></script>
 <script>
   var docData = <document Blob>;
 
@@ -126,10 +180,10 @@ npm install docx2html
 </body>
 ```
 
-## Использование в ESM/React+TS
+## Usage in ESM/React+TS
 
 ```ts
-import { renderAsync, parseAsync, renderDocument, defaultOptions } from "docx2html";
+import { renderAsync, parseAsync, renderDocument, defaultOptions } from "docx-html-renderer";
 ```
 
 ## API
