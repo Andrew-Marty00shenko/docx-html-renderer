@@ -27,15 +27,14 @@ jobs:
       - name: Check unused code
         run: npm run knip
 
+      - name: Run typecheck
+        run: npm run typecheck
+
       - name: Run linter
         run: npm run lint
 
       - name: Build project
         run: npm run build
-
-      - name: Run tests
-        run: npm test
-        if: ${{ false }} # Убрать если есть тесты
 
       - name: Publish to npm
         if: startsWith(github.ref, 'refs/tags/')

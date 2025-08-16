@@ -20,6 +20,7 @@ import type {
   WmlText,
   WmlParagraph,
   RunProperties,
+  ParagraphProperties,
   WmlRun,
   FooterHeaderReference,
   SectionProperties,
@@ -569,8 +570,14 @@ export class HtmlRenderer {
       const baseStyle = stylesMap[style.basedOn];
 
       if (baseStyle) {
-        style.paragraphProps = mergeDeep(style.paragraphProps, baseStyle.paragraphProps);
-        style.runProps = mergeDeep(style.runProps, baseStyle.runProps);
+        style.paragraphProps = mergeDeep(
+          style.paragraphProps as unknown as Record<string, unknown>,
+          baseStyle.paragraphProps as unknown as Record<string, unknown>,
+        ) as unknown as ParagraphProperties;
+        style.runProps = mergeDeep(
+          style.runProps as unknown as Record<string, unknown>,
+          baseStyle.runProps as unknown as Record<string, unknown>,
+        ) as unknown as RunProperties;
 
         for (const baseValues of baseStyle.styles) {
           const styleValues = style.styles.find((style) => style.target == baseValues.target);
