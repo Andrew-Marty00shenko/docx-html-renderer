@@ -1,0 +1,26 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/index.ts",
+    "src/html-renderer.ts",
+    "src/javascript.ts",
+    "src/utils.ts",
+    "src/typings.d.ts"
+  ],
+  "project": "**/*.{ts,js}",
+  "ignoreDependencies": [
+    "@babel/preset-env",
+    "@babel/preset-react",
+    "@babel/preset-typescript",
+    "ts-node",
+    "tslib"
+  ],
+  "ignoreBinaries": [],
+  "rules": {
+    "dependencies": "error",
+    "devDependencies": "error",
+    "unlisted": "error",
+    "binaries": "error",
+    "unresolved": "error"
+  }
+}

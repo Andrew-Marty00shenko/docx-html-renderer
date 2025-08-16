@@ -4,7 +4,7 @@ import type { DocumentParser } from "../document-parser";
 import type { WmlBaseNote } from "./elements";
 import { WmlEndnote, WmlFootnote } from "./elements";
 
-export class BaseNotePart<T extends WmlBaseNote> extends Part {
+class BaseNotePart<T extends WmlBaseNote> extends Part {
   protected _documentParser: DocumentParser;
 
   notes: T[];

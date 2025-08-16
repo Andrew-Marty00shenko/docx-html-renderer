@@ -8,7 +8,7 @@ export interface WmlBookmarkStart extends OpenXmlElement {
   colLast: number;
 }
 
-export interface WmlBookmarkEnd extends OpenXmlElement {
+interface WmlBookmarkEnd extends OpenXmlElement {
   id: string;
 }
 

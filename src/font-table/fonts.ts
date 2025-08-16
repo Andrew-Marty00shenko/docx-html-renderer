@@ -14,7 +14,7 @@ export interface FontDeclaration {
   embedFontRefs: EmbedFontRef[];
 }
 
-export interface EmbedFontRef {
+interface EmbedFontRef {
   id: string;
   key: string;
   type: "regular" | "bold" | "italic" | "boldItalic";
@@ -24,7 +24,7 @@ export function parseFonts(root: Element, xml: XmlParser): FontDeclaration[] {
   return xml.elements(root).map((el) => parseFont(el, xml));
 }
 
-export function parseFont(elem: Element, xml: XmlParser): FontDeclaration {
+function parseFont(elem: Element, xml: XmlParser): FontDeclaration {
   const result = {
     name: xml.attr(elem, "name"),
     embedFontRefs: [],
@@ -52,7 +52,7 @@ export function parseFont(elem: Element, xml: XmlParser): FontDeclaration {
   return result;
 }
 
-export function parseEmbedFontRef(elem: Element, xml: XmlParser): EmbedFontRef {
+function parseEmbedFontRef(elem: Element, xml: XmlParser): EmbedFontRef {
   return {
     id: xml.attr(elem, "id"),
     key: xml.attr(elem, "fontKey"),

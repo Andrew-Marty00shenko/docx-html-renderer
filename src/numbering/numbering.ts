@@ -16,7 +16,7 @@ export interface Numbering {
   overrides: NumberingLevelOverride[];
 }
 
-export interface NumberingLevelOverride {
+interface NumberingLevelOverride {
   level: number;
   start: number;
   numberingLevel: NumberingLevel;
@@ -31,7 +31,7 @@ export interface AbstractNumbering {
   styleLink: string;
 }
 
-export interface NumberingLevel {
+interface NumberingLevel {
   level: number;
   start: string;
   restart: number;
@@ -74,7 +74,7 @@ export function parseNumberingPart(elem: Element, xml: XmlParser): NumberingPart
   return result;
 }
 
-export function parseNumbering(elem: Element, xml: XmlParser): Numbering {
+function parseNumbering(elem: Element, xml: XmlParser): Numbering {
   const result = {
     id: xml.attr(elem, "numId"),
     overrides: [],
@@ -94,7 +94,7 @@ export function parseNumbering(elem: Element, xml: XmlParser): Numbering {
   return result;
 }
 
-export function parseAbstractNumbering(elem: Element, xml: XmlParser): AbstractNumbering {
+function parseAbstractNumbering(elem: Element, xml: XmlParser): AbstractNumbering {
   const result = {
     id: xml.attr(elem, "abstractNumId"),
     levels: [],
@@ -123,7 +123,7 @@ export function parseAbstractNumbering(elem: Element, xml: XmlParser): AbstractN
   return result;
 }
 
-export function parseNumberingLevel(elem: Element, xml: XmlParser): NumberingLevel {
+function parseNumberingLevel(elem: Element, xml: XmlParser): NumberingLevel {
   const result = {
     level: xml.intAttr(elem, "ilvl"),
   } as NumberingLevel;
@@ -163,7 +163,7 @@ export function parseNumberingLevel(elem: Element, xml: XmlParser): NumberingLev
   return result;
 }
 
-export function parseNumberingLevelOverrride(
+function parseNumberingLevelOverrride(
   elem: Element,
   xml: XmlParser,
 ): NumberingLevelOverride {
@@ -185,7 +185,7 @@ export function parseNumberingLevelOverrride(
   return result;
 }
 
-export function parseNumberingBulletPicture(elem: Element, xml: XmlParser): NumberingBulletPicture {
+function parseNumberingBulletPicture(elem: Element, xml: XmlParser): NumberingBulletPicture {
   //TODO
   const pict = xml.element(elem, "pict");
   const shape = pict && xml.element(pict, "shape");

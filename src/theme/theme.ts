@@ -5,18 +5,18 @@ export class DmlTheme {
   fontScheme: DmlFontScheme;
 }
 
-export interface DmlColorScheme {
+interface DmlColorScheme {
   name: string;
   colors: Record<string, string>;
 }
 
-export interface DmlFontScheme {
+interface DmlFontScheme {
   name: string;
   majorFont: DmlFormInfo;
   minorFont: DmlFormInfo;
 }
 
-export interface DmlFormInfo {
+interface DmlFormInfo {
   latinTypeface: string;
   eaTypeface: string;
   csTypeface: string;
@@ -40,7 +40,7 @@ export function parseTheme(elem: Element, xml: XmlParser) {
   return result;
 }
 
-export function parseColorScheme(elem: Element, xml: XmlParser) {
+function parseColorScheme(elem: Element, xml: XmlParser) {
   const result: DmlColorScheme = {
     name: xml.attr(elem, "name"),
     colors: {},
@@ -60,7 +60,7 @@ export function parseColorScheme(elem: Element, xml: XmlParser) {
   return result;
 }
 
-export function parseFontScheme(elem: Element, xml: XmlParser) {
+function parseFontScheme(elem: Element, xml: XmlParser) {
   const result: DmlFontScheme = {
     name: xml.attr(elem, "name"),
   } as DmlFontScheme;
@@ -79,7 +79,7 @@ export function parseFontScheme(elem: Element, xml: XmlParser) {
   return result;
 }
 
-export function parseFontInfo(elem: Element, xml: XmlParser): DmlFormInfo {
+function parseFontInfo(elem: Element, xml: XmlParser): DmlFormInfo {
   return {
     latinTypeface: xml.elementAttr(elem, "latin", "typeface"),
     eaTypeface: xml.elementAttr(elem, "ea", "typeface"),

@@ -229,7 +229,7 @@ export class WordDocument {
   }
 }
 
-export function deobfuscate(data: Uint8Array, guidKey: string): Uint8Array {
+function deobfuscate(data: Uint8Array, guidKey: string): Uint8Array {
   const len = 16;
   const trimmed = guidKey.replace(/{|}|-/g, "");
   const numbers = new Array(len);

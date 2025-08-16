@@ -35,7 +35,7 @@ export interface ParagraphTab {
   position: Length;
 }
 
-export interface ParagraphNumbering {
+interface ParagraphNumbering {
   id: string;
   level: number;
 }
@@ -109,7 +109,7 @@ export function parseParagraphProperty(elem: Element, props: ParagraphProperties
   return true;
 }
 
-export function parseTabs(elem: Element, xml: XmlParser): ParagraphTab[] {
+function parseTabs(elem: Element, xml: XmlParser): ParagraphTab[] {
   return xml.elements(elem, "tab").map(
     (e) =>
       ({
@@ -120,7 +120,7 @@ export function parseTabs(elem: Element, xml: XmlParser): ParagraphTab[] {
   );
 }
 
-export function parseNumbering(elem: Element, xml: XmlParser): ParagraphNumbering {
+function parseNumbering(elem: Element, xml: XmlParser): ParagraphNumbering {
   const result = {} as ParagraphNumbering;
 
   for (const e of xml.elements(elem)) {

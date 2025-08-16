@@ -2,7 +2,7 @@ import { Part } from "../common";
 import type { OpenXmlPackage } from "../common";
 import { keyBy } from "../utils";
 
-export type CommentsExtended = {
+type CommentsExtended = {
   paraId: string;
   paraIdParent?: string;
   done: boolean;

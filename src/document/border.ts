@@ -2,7 +2,7 @@ import type { XmlParser } from "../parser";
 import type { Length } from "./common";
 import { LengthUsage } from "./common";
 
-export interface Border {
+interface Border {
   color: string;
   type: string;
   size: Length;
@@ -18,7 +18,7 @@ export interface Borders {
   bottom: Border;
 }
 
-export function parseBorder(elem: Element, xml: XmlParser): Border {
+function parseBorder(elem: Element, xml: XmlParser): Border {
   return {
     type: xml.attr(elem, "val"),
     color: xml.attr(elem, "color"),

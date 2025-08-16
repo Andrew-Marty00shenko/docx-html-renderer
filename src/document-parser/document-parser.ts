@@ -46,7 +46,7 @@ import {
 } from "../comments";
 import { encloseFontFamily } from "../utils";
 
-export var autos = {
+var autos = {
   shd: "inherit",
   color: "black",
   borderColor: "black",
@@ -83,7 +83,7 @@ const mmlTagMap: Record<string, DomType> = {
   groupChr: "mmlGroupChar",
 };
 
-export interface DocumentParserOptions {
+interface DocumentParserOptions {
   ignoreWidth: boolean;
   debug: boolean;
 }

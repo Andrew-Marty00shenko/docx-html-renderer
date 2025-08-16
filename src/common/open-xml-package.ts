@@ -4,7 +4,7 @@ import { splitPath } from "../utils";
 import type { Relationship } from "./relationship";
 import { parseRelationships } from "./relationship";
 
-export interface OpenXmlPackageOptions {
+interface OpenXmlPackageOptions {
   trimXmlDeclaration: boolean;
   keepOrigin: boolean;
 }

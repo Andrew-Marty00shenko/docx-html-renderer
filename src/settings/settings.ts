@@ -8,7 +8,7 @@ export interface WmlSettings {
   autoHyphenation: boolean;
 }
 
-export interface NoteProperties {
+interface NoteProperties {
   nummeringFormat: string;
   defaultNoteIds: string[];
 }
@@ -36,7 +36,7 @@ export function parseSettings(elem: Element, xml: XmlParser) {
   return result;
 }
 
-export function parseNoteProperties(elem: Element, xml: XmlParser) {
+function parseNoteProperties(elem: Element, xml: XmlParser) {
   const result = {
     defaultNoteIds: [],
   } as NoteProperties;

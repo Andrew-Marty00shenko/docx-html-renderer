@@ -9,10 +9,10 @@ export const ns = {
   math: "http://schemas.openxmlformats.org/officeDocument/2006/math",
 };
 
-export type LengthType = "px" | "pt" | "%" | "";
+type LengthType = "px" | "pt" | "%" | "";
 export type Length = string;
 
-export interface Font {
+interface Font {
   name: string;
   family: string;
 }
@@ -67,7 +67,7 @@ export function convertBoolean(val: string, defaultValue: null | boolean = false
   }
 }
 
-export function convertPercentage(val: string): Nullable<number> {
+function convertPercentage(val: string): Nullable<number> {
   return val ? parseInt(val) / 100 : null;
 }
 
@@ -98,7 +98,7 @@ export function pxToPt(px: string, dpi = 96) {
   return parseFloat(px) * (72 / dpi);
 }
 
-export function ptToPx(pt: string | number, dpi = 96): number {
+function ptToPx(pt: string | number, dpi = 96): number {
   const ptValue = typeof pt === "string" ? parseFloat(pt) : pt;
   return ptValue * (dpi / 72);
 }

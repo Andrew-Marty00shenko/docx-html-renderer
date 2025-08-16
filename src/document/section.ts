@@ -4,12 +4,12 @@ import type { Borders } from "./border";
 import { parseBorders } from "./border";
 import type { Length } from "./common";
 
-export interface Column {
+interface Column {
   space: Length;
   width: Length;
 }
 
-export interface Columns {
+interface Columns {
   space: Length;
   numberOfColumns: number;
   separator: boolean;
@@ -17,13 +17,13 @@ export interface Columns {
   columns: Column[];
 }
 
-export interface PageSize {
+interface PageSize {
   width: Length;
   height: Length;
   orientation: "landscape" | string;
 }
 
-export interface PageNumber {
+interface PageNumber {
   start: number;
   chapSep: "colon" | "emDash" | "endash" | "hyphen" | "period" | string;
   chapStyle: string;
@@ -43,7 +43,7 @@ export interface PageNumber {
     | string;
 }
 
-export interface PageMargins {
+interface PageMargins {
   top: Length;
   right: Length;
   bottom: Length;
@@ -53,7 +53,7 @@ export interface PageMargins {
   gutter: Length;
 }
 
-export type SectionType = "continuous" | "nextPage" | "nextColumn" | "evenPage" | "oddPage";
+type SectionType = "continuous" | "nextPage" | "nextColumn" | "evenPage" | "oddPage";
 
 export interface FooterHeaderReference {
   id: string;

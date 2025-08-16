@@ -7,7 +7,7 @@ export interface Relationship {
   targetMode: "" | "External" | string;
 }
 
-export type RelationshipTypes =
+type RelationshipTypes =
   | "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
   | "http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable"
   | "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
