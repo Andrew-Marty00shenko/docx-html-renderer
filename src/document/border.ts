@@ -1,5 +1,5 @@
-import type { XmlParser } from "../parser/xml-parser";
-import type { Length} from "./common";
+import type { XmlParser } from "../parser";
+import type { Length } from "./common";
 import { LengthUsage } from "./common";
 
 export interface Border {

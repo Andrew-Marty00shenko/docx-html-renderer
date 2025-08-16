@@ -1,6 +1,6 @@
 import type { DocumentParser } from "../document-parser";
-import { OpenXmlElementBase, DomType } from "../document/dom";
-import xml from "../parser/xml-parser";
+import { OpenXmlElementBase, DomType } from "../document";
+import { XmlParser } from "../parser";
 
 export class VmlElement extends OpenXmlElementBase {
   type: DomType = DomType.VmlElement;
@@ -44,7 +44,7 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
       return null;
   }
 
-  for (const at of xml.attrs(elem)) {
+  for (const at of XmlParser.prototype.attrs(elem)) {
     switch (at.localName) {
       case "style":
         result.cssStyleText = at.value;
@@ -68,20 +68,20 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
     }
   }
 
-  for (const el of xml.elements(elem)) {
+  for (const el of XmlParser.prototype.elements(elem)) {
     switch (el.localName) {
       case "stroke":
-        result.attrs.stroke = xml.attr(el, "color");
+        result.attrs.stroke = XmlParser.prototype.attr(el, "color");
         result.attrs["stroke-width"] =
-          xml.lengthAttr(el, "weight", { mul: 1 / 12700, unit: "" }) ?? "1px";
+          XmlParser.prototype.lengthAttr(el, "weight", { mul: 1 / 12700, unit: "" }) ?? "1px";
         break;
 
       case "imagedata":
         result.tagName = "image";
         result.attrs = { width: "100%", height: "100%" };
         result.imageHref = {
-          id: xml.attr(el, "id"),
-          title: xml.attr(el, "title"),
+          id: XmlParser.prototype.attr(el, "id"),
+          title: XmlParser.prototype.attr(el, "title"),
         };
         break;
 

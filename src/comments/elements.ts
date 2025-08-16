@@ -1,4 +1,4 @@
-import { DomType, OpenXmlElementBase } from "../document/dom";
+import { DomType, OpenXmlElementBase } from "../document";
 
 export class WmlComment extends OpenXmlElementBase {
   type = DomType.Comment;

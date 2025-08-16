@@ -1,4 +1,4 @@
-import { OpenXmlElementBase, DomType } from "../document/dom";
+import { OpenXmlElementBase, DomType } from "../document";
 
 export class WmlHeader extends OpenXmlElementBase {
   type: DomType = DomType.Header;

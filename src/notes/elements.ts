@@ -1,5 +1,5 @@
-import type { OpenXmlElementBase} from "../document/dom";
-import { DomType } from "../document/dom";
+import type { OpenXmlElementBase } from "../document";
+import { DomType } from "../document";
 
 export abstract class WmlBaseNote implements OpenXmlElementBase {
   type: DomType;

@@ -1,4 +1,4 @@
-import type { XmlParser } from "../parser/xml-parser";
+import type { XmlParser } from "../parser";
 
 export interface Relationship {
   id: string;
@@ -38,6 +38,6 @@ export function parseRelationships(root: Element, xml: XmlParser): Relationship[
         type: xml.attr(e, "Type"),
         target: xml.attr(e, "Target"),
         targetMode: xml.attr(e, "TargetMode"),
-      } as Relationship),
+      }) as Relationship,
   );
 }

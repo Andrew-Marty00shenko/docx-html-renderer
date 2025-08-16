@@ -1,6 +1,6 @@
-import type { OpenXmlPackage } from "../common/open-xml-package";
-import { Part } from "../common/part";
-import type { DmlTheme} from "./theme";
+import type { OpenXmlPackage } from "../common";
+import { Part } from "../common";
+import type { DmlTheme } from "./theme";
 import { parseTheme } from "./theme";
 
 export class ThemePart extends Part {

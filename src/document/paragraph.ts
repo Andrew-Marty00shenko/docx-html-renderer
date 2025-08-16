@@ -1,12 +1,12 @@
 import type { OpenXmlElement } from "./dom";
-import type { CommonProperties, Length} from "./common";
+import type { CommonProperties, Length } from "./common";
 import { ns, parseCommonProperty } from "./common";
 import type { Borders } from "./border";
 import type { SectionProperties } from "./section";
 import { parseSectionProperties } from "./section";
-import type { LineSpacing} from "./line-spacing";
+import type { LineSpacing } from "./line-spacing";
 import { parseLineSpacing } from "./line-spacing";
-import type { XmlParser } from "../parser/xml-parser";
+import type { XmlParser } from "../parser";
 import type { RunProperties } from "./run";
 import { parseRunProperties } from "./run";
 
@@ -116,7 +116,7 @@ export function parseTabs(elem: Element, xml: XmlParser): ParagraphTab[] {
         position: xml.lengthAttr(e, "pos"),
         leader: xml.attr(e, "leader"),
         style: xml.attr(e, "val"),
-      } as ParagraphTab),
+      }) as ParagraphTab,
   );
 }
 

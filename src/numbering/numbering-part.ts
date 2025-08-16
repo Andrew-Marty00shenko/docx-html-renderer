@@ -1,15 +1,14 @@
-import type { OpenXmlPackage } from "../common/open-xml-package";
-import { Part } from "../common/part";
+import type { OpenXmlPackage } from "../common";
+import { Part } from "../common";
 import type { DocumentParser } from "../document-parser";
-import type { IDomNumbering } from "../document/dom";
+import type { IDomNumbering } from "../document";
 import type {
   AbstractNumbering,
   Numbering,
   NumberingBulletPicture,
-  NumberingPartProperties} from "./numbering";
-import {
-  parseNumberingPart,
+  NumberingPartProperties,
 } from "./numbering";
+import { parseNumberingPart } from "./numbering";
 
 export class NumberingPart extends Part implements NumberingPartProperties {
   private _documentParser: DocumentParser;

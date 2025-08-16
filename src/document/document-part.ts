@@ -1,5 +1,5 @@
-import type { OpenXmlPackage } from "../common/open-xml-package";
-import { Part } from "../common/part";
+import type { OpenXmlPackage } from "../common";
+import { Part } from "../common";
 import type { DocumentParser } from "../document-parser";
 import type { DocumentElement } from "./document";
 

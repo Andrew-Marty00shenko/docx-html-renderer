@@ -1,8 +1,8 @@
-import type { ParagraphProperties } from "../document/paragraph";
-import { parseParagraphProperties } from "../document/paragraph";
-import type { RunProperties } from "../document/run";
-import { parseRunProperties } from "../document/run";
-import type { XmlParser } from "../parser/xml-parser";
+import type { ParagraphProperties } from "../document";
+import { parseParagraphProperties } from "../document";
+import type { RunProperties } from "../document";
+import { parseRunProperties } from "../document";
+import type { XmlParser } from "../parser";
 
 export interface NumberingPartProperties {
   numberings: Numbering[];

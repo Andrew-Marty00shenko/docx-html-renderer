@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import { parseXmlString, XmlParser } from "../parser/xml-parser";
+import { parseXmlString, XmlParser } from "../parser";
 import { splitPath } from "../utils";
 import type { Relationship } from "./relationship";
 import { parseRelationships } from "./relationship";
@@ -17,29 +17,35 @@ export class OpenXmlPackage {
     public options: OpenXmlPackageOptions,
   ) {}
 
-  get(path: string): any {
+  get(path: string): Nullable<JSZip.JSZipObject> {
     const p = normalizePath(path);
-    return this._zip.files[p] ?? this._zip.files[p.replace(/\//g, "\\")];
+    return this._zip.files[p] ?? this._zip.files[p.replace(/\//g, "\\")] ?? null;
   }
 
-  update(path: string, content: any) {
+  update(path: string, content: string | Uint8Array | Blob) {
     this._zip.file(path, content);
   }
 
-  static async load(input: Blob | any, options: OpenXmlPackageOptions): Promise<OpenXmlPackage> {
+  static async load(
+    input: Blob | ArrayBuffer | Uint8Array,
+    options: OpenXmlPackageOptions,
+  ): Promise<OpenXmlPackage> {
     const zip = await JSZip.loadAsync(input);
     return new OpenXmlPackage(zip, options);
   }
 
-  save(type: any = "blob"): Promise<any> {
+  save(type: JSZip.OutputType = "blob"): Promise<unknown> {
     return this._zip.generateAsync({ type });
   }
 
-  load(path: string, type: JSZip.OutputType = "string"): Promise<any> {
+  load(
+    path: string,
+    type: JSZip.OutputType = "string",
+  ): Promise<Nullable<string | Uint8Array | Blob>> {
     return this.get(path)?.async(type) ?? Promise.resolve(null);
   }
 
-  async loadRelationships(path: string = null): Promise<Relationship[]> {
+  async loadRelationships(path: Nullable<string> = null): Promise<Nullable<Relationship[]>> {
     let relsPath = `_rels/.rels`;
 
     if (path != null) {
@@ -49,7 +55,7 @@ export class OpenXmlPackage {
 
     const txt = await this.load(relsPath);
     return txt
-      ? parseRelationships(this.parseXmlDocument(txt).firstElementChild, this.xmlParser)
+      ? parseRelationships(this.parseXmlDocument(txt as string).firstElementChild, this.xmlParser)
       : null;
   }
 

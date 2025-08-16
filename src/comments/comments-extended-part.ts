@@ -1,5 +1,5 @@
-import { Part } from "../common/part";
-import type { OpenXmlPackage } from "../common/open-xml-package";
+import { Part } from "../common";
+import type { OpenXmlPackage } from "../common";
 import { keyBy } from "../utils";
 
 export type CommentsExtended = {

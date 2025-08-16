@@ -1,4 +1,4 @@
-import type { XmlParser } from "../parser/xml-parser";
+import type { XmlParser } from "../parser";
 import { clamp } from "../utils";
 
 export const ns = {
@@ -67,7 +67,7 @@ export function convertBoolean(val: string, defaultValue: null | boolean = false
   }
 }
 
-export function convertPercentage(val: string): number | null {
+export function convertPercentage(val: string): Nullable<number> {
   return val ? parseInt(val) / 100 : null;
 }
 

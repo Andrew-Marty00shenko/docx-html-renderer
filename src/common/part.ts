@@ -1,4 +1,4 @@
-import { serializeXmlString } from "../parser/xml-parser";
+import { serializeXmlString } from "../parser";
 import type { OpenXmlPackage } from "./open-xml-package";
 import type { Relationship } from "./relationship";
 
@@ -12,17 +12,19 @@ export class Part {
     public path: string,
   ) {}
 
-  async load(): Promise<any> {
+  async load(): Promise<void> {
     this.rels = await this._package.loadRelationships(this.path);
 
     const xmlText = await this._package.load(this.path);
-    const xmlDoc = this._package.parseXmlDocument(xmlText);
+    if (xmlText && typeof xmlText === "string") {
+      const xmlDoc = this._package.parseXmlDocument(xmlText);
 
-    if (this._package.options.keepOrigin) {
-      this._xmlDocument = xmlDoc;
+      if (this._package.options.keepOrigin) {
+        this._xmlDocument = xmlDoc;
+      }
+
+      this.parseXml(xmlDoc.firstElementChild);
     }
-
-    this.parseXml(xmlDoc.firstElementChild);
   }
 
   save() {

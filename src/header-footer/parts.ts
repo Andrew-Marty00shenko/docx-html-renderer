@@ -1,7 +1,7 @@
-import type { OpenXmlPackage } from "../common/open-xml-package";
-import { Part } from "../common/part";
+import type { OpenXmlPackage } from "../common";
+import { Part } from "../common";
 import type { DocumentParser } from "../document-parser";
-import type { OpenXmlElement } from "../document/dom";
+import type { OpenXmlElement } from "../document";
 import { WmlHeader, WmlFooter } from "./elements";
 
 export abstract class BaseHeaderFooterPart<T extends OpenXmlElement = OpenXmlElement> extends Part {

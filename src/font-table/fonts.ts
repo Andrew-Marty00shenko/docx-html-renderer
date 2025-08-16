@@ -1,4 +1,4 @@
-import type { XmlParser } from "../parser/xml-parser";
+import type { XmlParser } from "../parser";
 
 const embedFontTypeMap = {
   embedRegular: "regular",

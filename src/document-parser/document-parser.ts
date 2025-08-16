@@ -14,29 +14,29 @@ import type {
   WmlBreak,
   WmlNoteReference,
   WmlAltChunk,
-} from "./document/dom";
-import { DomType } from "./document/dom";
-import type { DocumentElement } from "./document/document";
-import type { WmlParagraph } from "./document/paragraph";
-import { parseParagraphProperties, parseParagraphProperty } from "./document/paragraph";
-import type { SectionProperties } from "./document/section";
-import { parseSectionProperties } from "./document/section";
-import xml from "./parser/xml-parser";
-import type { WmlRun } from "./document/run";
-import { parseRunProperties } from "./document/run";
-import { parseBookmarkEnd, parseBookmarkStart } from "./document/bookmarks";
-import type { IDomStyle, IDomSubStyle } from "./document/style";
-import type { WmlFieldChar, WmlFieldSimple, WmlInstructionText } from "./document/fields";
-import type { LengthUsageType } from "./document/common";
-import { convertLength, LengthUsage } from "./document/common";
-import { parseVmlElement } from "./vml/vml";
+} from "../document";
+import { DomType } from "../document";
+import type { DocumentElement } from "../document";
+import type { WmlParagraph } from "../document";
+import { parseParagraphProperties, parseParagraphProperty } from "../document";
+import type { SectionProperties } from "../document";
+import { parseSectionProperties } from "../document/section";
+import { XmlParser } from "../parser";
+import type { WmlRun } from "../document";
+import { parseRunProperties } from "../document";
+import { parseBookmarkEnd, parseBookmarkStart } from "../document";
+import type { IDomStyle, IDomSubStyle } from "../document";
+import type { WmlFieldChar, WmlFieldSimple, WmlInstructionText } from "../document";
+import type { LengthUsageType } from "../document";
+import { convertLength, LengthUsage } from "../document";
+import { parseVmlElement } from "../vml";
 import {
   WmlComment,
   WmlCommentRangeEnd,
   WmlCommentRangeStart,
   WmlCommentReference,
-} from "./comments/elements";
-import { encloseFontFamily } from "./utils";
+} from "../comments";
+import { encloseFontFamily } from "../utils";
 
 export var autos = {
   shd: "inherit",
@@ -94,10 +94,10 @@ export class DocumentParser {
   parseNotes(xmlDoc: Element, elemName: string, elemClass: any): any[] {
     const result = [];
 
-    for (const el of xml.elements(xmlDoc, elemName)) {
+    for (const el of XmlParser.prototype.elements(xmlDoc, elemName)) {
       const node = new elemClass();
-      node.id = xml.attr(el, "id");
-      node.noteType = xml.attr(el, "type");
+      node.id = XmlParser.prototype.attr(el, "id");
+      node.noteType = XmlParser.prototype.attr(el, "type");
       node.children = this.parseBodyElements(el);
       result.push(node);
     }
@@ -108,12 +108,12 @@ export class DocumentParser {
   parseComments(xmlDoc: Element): any[] {
     const result = [];
 
-    for (const el of xml.elements(xmlDoc, "comment")) {
+    for (const el of XmlParser.prototype.elements(xmlDoc, "comment")) {
       const item = new WmlComment();
-      item.id = xml.attr(el, "id");
-      item.author = xml.attr(el, "author");
-      item.initials = xml.attr(el, "initials");
-      item.date = xml.attr(el, "date");
+      item.id = XmlParser.prototype.attr(el, "id");
+      item.author = XmlParser.prototype.attr(el, "author");
+      item.initials = XmlParser.prototype.attr(el, "initials");
+      item.date = XmlParser.prototype.attr(el, "date");
       item.children = this.parseBodyElements(el);
       result.push(item);
     }
@@ -894,7 +894,7 @@ export class DocumentParser {
     // result.style["margin-right"] = xml.sizeAttr(node, "distR", SizeType.Emu);
     // result.style["margin-bottom"] = xml.sizeAttr(node, "distB", SizeType.Emu);
 
-    let wrapType: "wrapTopAndBottom" | "wrapNone" | null = null;
+    let wrapType: Nullable<"wrapTopAndBottom" | "wrapNone"> = null;
     const simplePos = xml.boolAttr(node, "simplePos");
 
     const posX = { relative: "page", align: "left", offset: "0" };
@@ -1232,9 +1232,9 @@ export class DocumentParser {
 
   parseDefaultProperties(
     elem: Element,
-    style: Record<string, string> = null,
-    childStyle: Record<string, string> = null,
-    handler: (prop: Element) => boolean = null,
+    style: Nullable<Record<string, string>> = null,
+    childStyle: Nullable<Record<string, string>> = null,
+    handler: Nullable<(prop: Element) => boolean> = null,
   ): Record<string, string> {
     style = style || {};
 
@@ -1608,7 +1608,12 @@ class xmlUtil {
     }
   }
 
-  static colorAttr(node: Element, attrName: string, defValue: string = null, autoColor = "black") {
+  static colorAttr(
+    node: Element,
+    attrName: string,
+    defValue: Nullable<string> = null,
+    autoColor = "black",
+  ) {
     const v = xml.attr(node, attrName);
 
     if (v) {

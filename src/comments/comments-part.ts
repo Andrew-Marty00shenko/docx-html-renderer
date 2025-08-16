@@ -1,5 +1,5 @@
-import { Part } from "../common/part";
-import type { OpenXmlPackage } from "../common/open-xml-package";
+import { Part } from "../common";
+import type { OpenXmlPackage } from "../common";
 import type { DocumentParser } from "../document-parser";
 import type { WmlComment } from "./elements";
 import { keyBy } from "../utils";

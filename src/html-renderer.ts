@@ -1,10 +1,9 @@
-import type { WmlComment, WmlCommentRangeStart, WmlCommentReference } from "./comments/elements";
-import type { Part } from "./common/part";
-import type { WmlBookmarkStart } from "./document/bookmarks";
-import type { CommonProperties } from "./document/common";
-import { calculateTotalElementHeight, getComputedStyles, pxToPt } from "./document/common";
-import type { DocumentElement } from "./document/document";
+import type { WmlComment, WmlCommentRangeStart, WmlCommentReference } from "./comments";
+import type { Part } from "./common";
 import type {
+  WmlBookmarkStart,
+  CommonProperties,
+  DocumentElement,
   IDomImage,
   IDomNumbering,
   OpenXmlElement,
@@ -19,21 +18,23 @@ import type {
   WmlTableColumn,
   WmlTableRow,
   WmlText,
-} from "./document/dom";
-import { DomType } from "./document/dom";
-import type { WmlParagraph } from "./document/paragraph";
-import type { RunProperties, WmlRun } from "./document/run";
-import type { FooterHeaderReference, SectionProperties } from "./document/section";
-import type { IDomStyle } from "./document/style";
-import type { FontTablePart } from "./font-table/font-table";
-import type { BaseHeaderFooterPart } from "./header-footer/parts";
-import type { WmlBaseNote, WmlFootnote } from "./notes/elements";
-import type { ThemePart } from "./theme/theme-part";
-import type { VmlElement } from "./vml/vml";
+  WmlParagraph,
+  RunProperties,
+  WmlRun,
+  FooterHeaderReference,
+  SectionProperties,
+  IDomStyle,
+} from "./document";
+import { calculateTotalElementHeight, getComputedStyles, pxToPt, DomType } from "./document";
+import type { FontTablePart } from "./font-table";
+import type { BaseHeaderFooterPart } from "./header-footer";
+import type { WmlBaseNote, WmlFootnote } from "./notes";
+import type { ThemePart } from "./theme";
+import type { VmlElement } from "./vml";
 import type { DefaultOptions } from "./docx-preview";
 import { computePixelToPoint, updateTabStop } from "./javascript";
 import { asArray, encloseFontFamily, escapeClassName, isString, keyBy, mergeDeep } from "./utils";
-import type { WordDocument } from "./word-document/index";
+import type { WordDocument } from "./word-document";
 
 const ns = {
   svg: "http://www.w3.org/2000/svg",
@@ -78,7 +79,7 @@ export class HtmlRenderer {
   document: WordDocument = null!;
   options: DefaultOptions = {} as DefaultOptions;
   styleMap: Record<string, IDomStyle> = {};
-  currentPart: Part | null = null;
+  currentPart: Nullable<Part> = null;
 
   tableVerticalMerges: CellVerticalMergeType[] = [];
   currentVerticalMerge: CellVerticalMergeType = null!;
@@ -105,7 +106,7 @@ export class HtmlRenderer {
   async render(
     document: WordDocument,
     bodyContainer: HTMLElement,
-    styleContainer: HTMLElement | null = null,
+    styleContainer: Nullable<HTMLElement> = null,
     options: DefaultOptions,
   ) {
     this.document = document;
@@ -191,7 +192,7 @@ export class HtmlRenderer {
 
   getModifiedTables({ articleChildrenHeight, currentTable, availableHeight }: GetTableProps) {
     let breakingChildIndex = 0;
-    let newTable: HTMLElement | null = null;
+    let newTable: Nullable<HTMLElement> = null;
     let hasOversizeElement = false;
 
     for (let index = 0; index < currentTable.children.length; index++) {
@@ -264,9 +265,9 @@ export class HtmlRenderer {
 
     let articleChildrenHeight = 0;
 
-    let newSection: HTMLElement | null = null;
-    let currentTable: HTMLElement | null = null;
-    let newTable: HTMLElement | null = null;
+    let newSection: Nullable<HTMLElement> = null;
+    let currentTable: Nullable<HTMLElement> = null;
+    let newTable: Nullable<HTMLElement> = null;
 
     let hasOversizeElement = false;
 
@@ -633,7 +634,7 @@ export class HtmlRenderer {
   copyStyleProperties(
     input: Record<string, string>,
     output: Record<string, string>,
-    attrs: string[] | null = null,
+    attrs: Nullable<string[]> = null,
   ): Record<string, string> {
     if (!input) return output;
 
@@ -1079,7 +1080,7 @@ section.${className}>footer { z-index: 1; }
     }
   }
 
-  renderElement(elem: OpenXmlElement): Node | Node[] | null {
+  renderElement(elem: OpenXmlElement): Nullable<Node | Node[]> {
     switch (elem.type) {
       case DomType.Paragraph:
         return this.renderParagraph(elem as WmlParagraph);
@@ -1246,7 +1247,7 @@ section.${className}>footer { z-index: 1; }
     return null;
   }
 
-  renderElements(elems: OpenXmlElement[], into?: Node): Node[] | null {
+  renderElements(elems: OpenXmlElement[], into?: Node): Nullable<Node[]> {
     if (elems == null) return null;
 
     const result = elems.flatMap((el) => this.renderElement(el)).filter((el) => el != null);
@@ -1481,7 +1482,7 @@ section.${className}>footer { z-index: 1; }
     return this.renderElements(elem.children);
   }
 
-  renderDeleted(elem: OpenXmlElement): Node | null {
+  renderDeleted(elem: OpenXmlElement): Nullable<Node> {
     if (this.options.renderChanges) return this.renderContainer(elem, "del");
 
     return null;
@@ -2066,7 +2067,11 @@ section.${className}>footer { z-index: 1; }
     return `${this.className}-tab-stop`;
   }
 
-  styleToString(selectors: string, values: Record<string, string>, cssText: string | null = null) {
+  styleToString(
+    selectors: string,
+    values: Record<string, string>,
+    cssText: Nullable<string> = null,
+  ) {
     let result = `${selectors} {\r\n`;
 
     for (const key in values) {

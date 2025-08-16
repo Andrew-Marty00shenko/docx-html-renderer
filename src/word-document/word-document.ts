@@ -1,25 +1,24 @@
 import type { OutputType } from "jszip";
 
 import type { DocumentParser } from "../document-parser";
-import type { Relationship } from "../common/relationship";
-import { RelationshipTypes } from "../common/relationship";
-import type { Part } from "../common/part";
-import type { OpenXmlPackageOptions } from "../common/open-xml-package";
-import { FontTablePart } from "../font-table/font-table";
-import { OpenXmlPackage } from "../common/open-xml-package";
-import { DocumentPart } from "../document/document-part";
+import type { Relationship } from "../common";
+import { RelationshipTypes } from "../common";
+import type { Part } from "../common";
+import { FontTablePart } from "../font-table";
+import { OpenXmlPackage } from "../common";
+import { DocumentPart } from "../document";
 import { blobToBase64, resolvePath, splitPath } from "../utils";
-import { NumberingPart } from "../numbering/numbering-part";
-import { StylesPart } from "../styles/styles-part";
-import { FooterPart, HeaderPart } from "../header-footer/parts";
-import { ExtendedPropsPart } from "../document-props/extended-props-part";
-import { CorePropsPart } from "../document-props/core-props-part";
-import { ThemePart } from "../theme/theme-part";
-import { EndnotesPart, FootnotesPart } from "../notes/parts";
-import { SettingsPart } from "../settings/settings-part";
-import { CustomPropsPart } from "../document-props/custom-props-part";
-import { CommentsPart } from "../comments/comments-part";
-import { CommentsExtendedPart } from "../comments/comments-extended-part";
+import { NumberingPart } from "../numbering";
+import { StylesPart } from "../styles";
+import { FooterPart, HeaderPart } from "../header-footer";
+import { ExtendedPropsPart } from "../document-props";
+import { CorePropsPart } from "../document-props";
+import { ThemePart } from "../theme";
+import { EndnotesPart, FootnotesPart } from "../notes";
+import { SettingsPart } from "../settings";
+import { CustomPropsPart } from "../document-props";
+import { CommentsPart } from "../comments";
+import { CommentsExtendedPart } from "../comments";
 
 interface WordDocumentOptions {
   trimXmlDeclaration: boolean;
@@ -78,8 +77,10 @@ export class WordDocument {
     return d;
   }
 
-  save(type = "blob"): Promise<Blob | ArrayBuffer | string> {
-    return this._package.save(type);
+  save(
+    type: "blob" | "string" | "uint8array" | "arraybuffer" = "blob",
+  ): Promise<Blob | ArrayBuffer | string> {
+    return this._package.save(type) as Promise<Blob | ArrayBuffer | string>;
   }
 
   private async loadRelationshipPart(path: string, type: string): Promise<Part> {
