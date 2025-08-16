@@ -13,7 +13,14 @@
     "@babel/preset-react",
     "@babel/preset-typescript",
     "ts-node",
-    "tslib"
+    "tslib",
+    "@babel/core",
+    "@babel/helpers",
+    "json5",
+    "convert-source-map",
+    "gensync",
+    "semver",
+    "@ampproject/remapping"
   ],
   "ignoreBinaries": [],
   "rules": {
