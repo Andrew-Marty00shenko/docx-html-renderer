@@ -1,7 +1,8 @@
-import { NumberingPicBullet } from "../document/dom";
-import { ParagraphProperties, parseParagraphProperties } from "../document/paragraph";
-import { parseRunProperties, RunProperties } from "../document/run";
-import { XmlParser } from "../parser/xml-parser";
+import type { ParagraphProperties } from "../document/paragraph";
+import { parseParagraphProperties } from "../document/paragraph";
+import type { RunProperties } from "../document/run";
+import { parseRunProperties } from "../document/run";
+import type { XmlParser } from "../parser/xml-parser";
 
 export interface NumberingPartProperties {
   numberings: Numbering[];

@@ -1,23 +1,31 @@
-import { OutputType } from "jszip";
+import type { OutputType } from "jszip";
 
-import { DocumentParser } from "./document-parser";
-import { Relationship, RelationshipTypes } from "./common/relationship";
-import { Part } from "./common/part";
-import { FontTablePart } from "./font-table/font-table";
-import { OpenXmlPackage } from "./common/open-xml-package";
-import { DocumentPart } from "./document/document-part";
-import { blobToBase64, resolvePath, splitPath } from "./utils";
-import { NumberingPart } from "./numbering/numbering-part";
-import { StylesPart } from "./styles/styles-part";
-import { FooterPart, HeaderPart } from "./header-footer/parts";
-import { ExtendedPropsPart } from "./document-props/extended-props-part";
-import { CorePropsPart } from "./document-props/core-props-part";
-import { ThemePart } from "./theme/theme-part";
-import { EndnotesPart, FootnotesPart } from "./notes/parts";
-import { SettingsPart } from "./settings/settings-part";
-import { CustomPropsPart } from "./document-props/custom-props-part";
-import { CommentsPart } from "./comments/comments-part";
-import { CommentsExtendedPart } from "./comments/comments-extended-part";
+import type { DocumentParser } from "../document-parser";
+import type { Relationship } from "../common/relationship";
+import { RelationshipTypes } from "../common/relationship";
+import type { Part } from "../common/part";
+import type { OpenXmlPackageOptions } from "../common/open-xml-package";
+import { FontTablePart } from "../font-table/font-table";
+import { OpenXmlPackage } from "../common/open-xml-package";
+import { DocumentPart } from "../document/document-part";
+import { blobToBase64, resolvePath, splitPath } from "../utils";
+import { NumberingPart } from "../numbering/numbering-part";
+import { StylesPart } from "../styles/styles-part";
+import { FooterPart, HeaderPart } from "../header-footer/parts";
+import { ExtendedPropsPart } from "../document-props/extended-props-part";
+import { CorePropsPart } from "../document-props/core-props-part";
+import { ThemePart } from "../theme/theme-part";
+import { EndnotesPart, FootnotesPart } from "../notes/parts";
+import { SettingsPart } from "../settings/settings-part";
+import { CustomPropsPart } from "../document-props/custom-props-part";
+import { CommentsPart } from "../comments/comments-part";
+import { CommentsExtendedPart } from "../comments/comments-extended-part";
+
+interface WordDocumentOptions {
+  trimXmlDeclaration: boolean;
+  keepOrigin: boolean;
+  useBase64URL?: boolean;
+}
 
 const topLevelRels = [
   { type: RelationshipTypes.OfficeDocument, target: "word/document.xml" },
@@ -29,7 +37,7 @@ const topLevelRels = [
 export class WordDocument {
   private _package: OpenXmlPackage;
   private _parser: DocumentParser;
-  private _options: any;
+  private _options: WordDocumentOptions;
 
   rels: Relationship[];
   parts: Part[] = [];
@@ -48,7 +56,11 @@ export class WordDocument {
   commentsPart: CommentsPart;
   commentsExtendedPart: CommentsExtendedPart;
 
-  static async load(blob: Blob | any, parser: DocumentParser, options: any): Promise<WordDocument> {
+  static async load(
+    blob: Blob | ArrayBuffer,
+    parser: DocumentParser,
+    options: WordDocumentOptions,
+  ): Promise<WordDocument> {
     const d = new WordDocument();
 
     d._options = options;
@@ -66,7 +78,7 @@ export class WordDocument {
     return d;
   }
 
-  save(type = "blob"): Promise<any> {
+  save(type = "blob"): Promise<Blob | ArrayBuffer | string> {
     return this._package.save(type);
   }
 

@@ -1,5 +1,5 @@
-import { XmlParser } from "../parser/xml-parser";
-import { Length } from "./common";
+import type { XmlParser } from "../parser/xml-parser";
+import type { Length } from "./common";
 
 export interface LineSpacing {
   after: Length;

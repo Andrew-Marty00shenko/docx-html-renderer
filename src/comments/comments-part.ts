@@ -1,7 +1,7 @@
 import { Part } from "../common/part";
-import { OpenXmlPackage } from "../common/open-xml-package";
-import { DocumentParser } from "../document-parser";
-import { WmlComment } from "./elements";
+import type { OpenXmlPackage } from "../common/open-xml-package";
+import type { DocumentParser } from "../document-parser";
+import type { WmlComment } from "./elements";
 import { keyBy } from "../utils";
 
 export class CommentsPart extends Part {

@@ -1,5 +1,5 @@
-import { Length } from "./document/common";
-import { ParagraphTab } from "./document/paragraph";
+import type { Length } from "./document/common";
+import type { ParagraphTab } from "./document/paragraph";
 
 interface TabStop {
   pos: number;

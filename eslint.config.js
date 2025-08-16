@@ -4,13 +4,13 @@ import prettier from "eslint-config-prettier";
 
 export default tseslint.config(
   {
-    ignores: ["dist/**", "node_modules/**"],
+    ignores: ["**/lib/**", "**/node_modules/**", "**/dist/**"],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...tseslint.configs.stylistic,
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["src/**/*.{ts,tsx}"],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
@@ -29,10 +29,17 @@ export default tseslint.config(
       "no-fallthrough": "off",
       "@typescript-eslint/consistent-type-definitions": "off",
       "@typescript-eslint/consistent-type-assertions": "off",
-      "@typescript-eslint/no-explicit-any": "off",
+
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-inferrable-types": "off",
       "@typescript-eslint/prefer-for-of": "off",
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          prefer: "type-imports",
+          disallowTypeAnnotations: false,
+        },
+      ],
       "@typescript-eslint/no-unused-vars": [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },

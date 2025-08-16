@@ -1,5 +1,6 @@
 import { Part } from "../common/part";
-import { FontDeclaration, parseFonts } from "./fonts";
+import type { FontDeclaration} from "./fonts";
+import { parseFonts } from "./fonts";
 
 export class FontTablePart extends Part {
   fonts: FontDeclaration[];

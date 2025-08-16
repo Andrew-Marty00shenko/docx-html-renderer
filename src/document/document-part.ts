@@ -1,7 +1,7 @@
-import { OpenXmlPackage } from "../common/open-xml-package";
+import type { OpenXmlPackage } from "../common/open-xml-package";
 import { Part } from "../common/part";
-import { DocumentParser } from "../document-parser";
-import { DocumentElement } from "./document";
+import type { DocumentParser } from "../document-parser";
+import type { DocumentElement } from "./document";
 
 export class DocumentPart extends Part {
   private _documentParser: DocumentParser;

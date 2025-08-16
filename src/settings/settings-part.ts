@@ -1,6 +1,7 @@
-import { OpenXmlPackage } from "../common/open-xml-package";
+import type { OpenXmlPackage } from "../common/open-xml-package";
 import { Part } from "../common/part";
-import { WmlSettings, parseSettings } from "./settings";
+import type { WmlSettings} from "./settings";
+import { parseSettings } from "./settings";
 
 export class SettingsPart extends Part {
   settings: WmlSettings;

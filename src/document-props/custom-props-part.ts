@@ -1,5 +1,6 @@
 import { Part } from "../common/part";
-import { CustomProperty, parseCustomProps } from "./custom-props";
+import type { CustomProperty} from "./custom-props";
+import { parseCustomProps } from "./custom-props";
 
 export class CustomPropsPart extends Part {
   props: CustomProperty[];

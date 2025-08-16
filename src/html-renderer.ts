@@ -30,10 +30,10 @@ import type { BaseHeaderFooterPart } from "./header-footer/parts";
 import type { WmlBaseNote, WmlFootnote } from "./notes/elements";
 import type { ThemePart } from "./theme/theme-part";
 import type { VmlElement } from "./vml/vml";
-import type { Options } from "./docx2html";
+import type { DefaultOptions } from "./docx-preview";
 import { computePixelToPoint, updateTabStop } from "./javascript";
 import { asArray, encloseFontFamily, escapeClassName, isString, keyBy, mergeDeep } from "./utils";
-import type { WordDocument } from "./word-document";
+import type { WordDocument } from "./word-document/index";
 
 const ns = {
   svg: "http://www.w3.org/2000/svg",
@@ -76,7 +76,7 @@ export class HtmlRenderer {
   className = "docx";
   rootSelector = "";
   document: WordDocument = null!;
-  options: Options = {} as Options;
+  options: DefaultOptions = {} as DefaultOptions;
   styleMap: Record<string, IDomStyle> = {};
   currentPart: Part | null = null;
 
@@ -106,7 +106,7 @@ export class HtmlRenderer {
     document: WordDocument,
     bodyContainer: HTMLElement,
     styleContainer: HTMLElement | null = null,
-    options: Options,
+    options: DefaultOptions,
   ) {
     this.document = document;
     this.options = options;

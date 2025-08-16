@@ -1,5 +1,4 @@
-import {
-  DomType,
+import type {
   WmlTable,
   IDomNumbering,
   WmlHyperlink,
@@ -16,19 +15,20 @@ import {
   WmlNoteReference,
   WmlAltChunk,
 } from "./document/dom";
-import { DocumentElement } from "./document/document";
-import {
-  WmlParagraph,
-  parseParagraphProperties,
-  parseParagraphProperty,
-} from "./document/paragraph";
-import { parseSectionProperties, SectionProperties } from "./document/section";
+import { DomType } from "./document/dom";
+import type { DocumentElement } from "./document/document";
+import type { WmlParagraph } from "./document/paragraph";
+import { parseParagraphProperties, parseParagraphProperty } from "./document/paragraph";
+import type { SectionProperties } from "./document/section";
+import { parseSectionProperties } from "./document/section";
 import xml from "./parser/xml-parser";
-import { parseRunProperties, WmlRun } from "./document/run";
+import type { WmlRun } from "./document/run";
+import { parseRunProperties } from "./document/run";
 import { parseBookmarkEnd, parseBookmarkStart } from "./document/bookmarks";
-import { IDomStyle, IDomSubStyle } from "./document/style";
-import { WmlFieldChar, WmlFieldSimple, WmlInstructionText } from "./document/fields";
-import { convertLength, LengthUsage, LengthUsageType } from "./document/common";
+import type { IDomStyle, IDomSubStyle } from "./document/style";
+import type { WmlFieldChar, WmlFieldSimple, WmlInstructionText } from "./document/fields";
+import type { LengthUsageType } from "./document/common";
+import { convertLength, LengthUsage } from "./document/common";
 import { parseVmlElement } from "./vml/vml";
 import {
   WmlComment,
@@ -310,7 +310,10 @@ export class DocumentParser {
           break;
 
         default:
-          this.options.debug && console.warn(`DOCX: Unknown style element: ${n.localName}`);
+          if (this.options.debug) {
+            // eslint-disable-next-line no-console
+            console.warn(`DOCX: Unknown style element: ${n.localName}`);
+          }
       }
     });
 
@@ -501,19 +504,19 @@ export class DocumentParser {
     return result;
   }
 
-  parseSdt(node: Element, parser: Function): OpenXmlElement[] {
+  parseSdt(node: Element, parser: (elem: Element) => OpenXmlElement[]): OpenXmlElement[] {
     const sdtContent = xml.element(node, "sdtContent");
     return sdtContent ? parser(sdtContent) : [];
   }
 
-  parseInserted(node: Element, parentParser: Function): OpenXmlElement {
+  parseInserted(node: Element, parentParser: (elem: Element) => OpenXmlElement): OpenXmlElement {
     return {
       type: DomType.Inserted,
       children: parentParser(node)?.children ?? [],
     } as OpenXmlElement;
   }
 
-  parseDeleted(node: Element, parentParser: Function): OpenXmlElement {
+  parseDeleted(node: Element, parentParser: (elem: Element) => OpenXmlElement): OpenXmlElement {
     return {
       type: DomType.Deleted,
       children: parentParser(node)?.children ?? [],
@@ -667,17 +670,17 @@ export class DocumentParser {
 
       switch (c.localName) {
         case "t":
-          result.children.push(({
+          result.children.push({
             type: DomType.Text,
             text: c.textContent,
-          } as WmlText)); //.replace(" ", "\u00A0"); // TODO
+          } as WmlText); //.replace(" ", "\u00A0"); // TODO
           break;
 
         case "delText":
-          result.children.push(({
+          result.children.push({
             type: DomType.DeletedText,
             text: c.textContent,
-          } as WmlText));
+          } as WmlText);
           break;
 
         case "commentReference":
@@ -685,30 +688,30 @@ export class DocumentParser {
           break;
 
         case "fldSimple":
-          result.children.push(({
+          result.children.push({
             type: DomType.SimpleField,
             instruction: xml.attr(c, "instr"),
             lock: xml.boolAttr(c, "lock", false),
             dirty: xml.boolAttr(c, "dirty", false),
-          } as WmlFieldSimple));
+          } as WmlFieldSimple);
           break;
 
         case "instrText":
           result.fieldRun = true;
-          result.children.push(({
+          result.children.push({
             type: DomType.Instruction,
             text: c.textContent,
-          } as WmlInstructionText));
+          } as WmlInstructionText);
           break;
 
         case "fldChar":
           result.fieldRun = true;
-          result.children.push(({
+          result.children.push({
             type: DomType.ComplexField,
             charType: xml.attr(c, "fldCharType"),
             lock: xml.boolAttr(c, "lock", false),
             dirty: xml.boolAttr(c, "dirty", false),
-          } as WmlFieldChar));
+          } as WmlFieldChar);
           break;
 
         case "noBreakHyphen":
@@ -716,25 +719,25 @@ export class DocumentParser {
           break;
 
         case "br":
-          result.children.push(({
+          result.children.push({
             type: DomType.Break,
             break: xml.attr(c, "type") || "textWrapping",
-          } as WmlBreak));
+          } as WmlBreak);
           break;
 
         case "lastRenderedPageBreak":
-          result.children.push(({
+          result.children.push({
             type: DomType.Break,
             break: "lastRenderedPageBreak",
-          } as WmlBreak));
+          } as WmlBreak);
           break;
 
         case "sym":
-          result.children.push(({
+          result.children.push({
             type: DomType.Symbol,
             font: encloseFontFamily(xml.attr(c, "font")),
             char: xml.attr(c, "char"),
-          } as WmlSymbol));
+          } as WmlSymbol);
           break;
 
         case "tab":
@@ -742,17 +745,17 @@ export class DocumentParser {
           break;
 
         case "footnoteReference":
-          result.children.push(({
+          result.children.push({
             type: DomType.FootnoteReference,
             id: xml.attr(c, "id"),
-          } as WmlNoteReference));
+          } as WmlNoteReference);
           break;
 
         case "endnoteReference":
-          result.children.push(({
+          result.children.push({
             type: DomType.EndnoteReference,
             id: xml.attr(c, "id"),
-          } as WmlNoteReference));
+          } as WmlNoteReference);
           break;
 
         case "drawing":
@@ -848,7 +851,9 @@ export class DocumentParser {
 
     for (const el of xml.elements(elem)) {
       const child = parseVmlElement(el, this);
-      child && result.children.push(child);
+      if (child) {
+        result.children.push(child);
+      }
     }
 
     return result;
@@ -891,7 +896,6 @@ export class DocumentParser {
 
     let wrapType: "wrapTopAndBottom" | "wrapNone" | null = null;
     const simplePos = xml.boolAttr(node, "simplePos");
-    const behindDoc = xml.boolAttr(node, "behindDoc");
 
     const posX = { relative: "page", align: "left", offset: "0" };
     const posY = { relative: "page", align: "top", offset: "0" };
@@ -1402,8 +1406,10 @@ export class DocumentParser {
           break;
 
         default:
-          if (this.options.debug)
+          if (this.options.debug) {
+            // eslint-disable-next-line no-console
             console.warn(`DOCX: Unknown document element: ${elem.localName}.${c.localName}`);
+          }
           break;
       }
     });
@@ -1598,16 +1604,11 @@ class xmlUtil {
     for (let i = 0; i < node.childNodes.length; i++) {
       const n = node.childNodes[i];
 
-      if (n.nodeType == Node.ELEMENT_NODE) cb((n as Element));
+      if (n.nodeType == Node.ELEMENT_NODE) cb(n as Element);
     }
   }
 
-  static colorAttr(
-    node: Element,
-    attrName: string,
-    defValue: string = null,
-    autoColor = "black",
-  ) {
+  static colorAttr(node: Element, attrName: string, defValue: string = null, autoColor = "black") {
     const v = xml.attr(node, attrName);
 
     if (v) {

@@ -1,4 +1,4 @@
-import { XmlParser } from "../parser/xml-parser";
+import type { XmlParser } from "../parser/xml-parser";
 
 export interface CustomProperty {
   formatId: string;

@@ -1,15 +1,12 @@
-import { DocumentParser } from "../document-parser";
-import { convertLength, LengthUsage } from "../document/common";
+import type { DocumentParser } from "../document-parser";
 import { OpenXmlElementBase, DomType } from "../document/dom";
 import xml from "../parser/xml-parser";
-import { formatCssRules, parseCssRules } from "../utils";
 
 export class VmlElement extends OpenXmlElementBase {
   type: DomType = DomType.VmlElement;
   tagName: string;
   cssStyleText?: string;
   attrs: Record<string, string> = {};
-  wrapType?: string;
   imageHref?: {
     id: string;
     title: string;
@@ -22,12 +19,12 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
   switch (elem.localName) {
     case "rect":
       result.tagName = "rect";
-      Object.assign(result.attrs, { width: "100%", height: "100%" });
+      result.attrs = { width: "100%", height: "100%" };
       break;
 
     case "oval":
       result.tagName = "ellipse";
-      Object.assign(result.attrs, { cx: "50%", cy: "50%", rx: "50%", ry: "50%" });
+      result.attrs = { cx: "50%", cy: "50%", rx: "50%", ry: "50%" };
       break;
 
     case "line":
@@ -40,7 +37,7 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
 
     case "textbox":
       result.tagName = "foreignObject";
-      Object.assign(result.attrs, { width: "100%", height: "100%" });
+      result.attrs = { width: "100%", height: "100%" };
       break;
 
     default:
@@ -58,13 +55,15 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
         break;
 
       case "from":
-        const [x1, y1] = parsePoint(at.value);
-        Object.assign(result.attrs, { x1, y1 });
+        const [x1, y1] = at.value.split(",");
+        result.attrs.x1 = x1;
+        result.attrs.y1 = y1;
         break;
 
       case "to":
-        const [x2, y2] = parsePoint(at.value);
-        Object.assign(result.attrs, { x2, y2 });
+        const [x2, y2] = at.value.split(",");
+        result.attrs.x2 = x2;
+        result.attrs.y2 = y2;
         break;
     }
   }
@@ -72,16 +71,14 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
   for (const el of xml.elements(elem)) {
     switch (el.localName) {
       case "stroke":
-        Object.assign(result.attrs, parseStroke(el));
-        break;
-
-      case "fill":
-        Object.assign(result.attrs, parseFill(el));
+        result.attrs.stroke = xml.attr(el, "color");
+        result.attrs["stroke-width"] =
+          xml.lengthAttr(el, "weight", { mul: 1 / 12700, unit: "" }) ?? "1px";
         break;
 
       case "imagedata":
         result.tagName = "image";
-        Object.assign(result.attrs, { width: "100%", height: "100%" });
+        result.attrs = { width: "100%", height: "100%" };
         result.imageHref = {
           id: xml.attr(el, "id"),
           title: xml.attr(el, "title"),
@@ -94,36 +91,12 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
 
       default:
         const child = parseVmlElement(el, parser);
-        child && result.children.push(child);
+        if (child) {
+          result.children.push(child);
+        }
         break;
     }
   }
 
   return result;
-}
-
-function parseStroke(el: Element): Record<string, string> {
-  return {
-    stroke: xml.attr(el, "color"),
-    "stroke-width": xml.lengthAttr(el, "weight", LengthUsage.Emu) ?? "1px",
-  };
-}
-
-function parseFill(el: Element): Record<string, string> {
-  return {
-    //'fill': xml.attr(el, "color2")
-  };
-}
-
-function parsePoint(val: string): string[] {
-  return val.split(",");
-}
-
-function convertPath(path: string): string {
-  return path.replace(/([mlxe])|([-\d]+)|([,])/g, (m) => {
-    if (/[-\d]/.test(m)) return convertLength(m, LengthUsage.VmlEmu);
-    if (/[ml,]/.test(m)) return m;
-
-    return "";
-  });
 }

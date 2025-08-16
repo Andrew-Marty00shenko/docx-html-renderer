@@ -1,5 +1,6 @@
 import { Part } from "../common/part";
-import { ExtendedPropsDeclaration, parseExtendedProps } from "./extended-props";
+import type { ExtendedPropsDeclaration} from "./extended-props";
+import { parseExtendedProps } from "./extended-props";
 
 export class ExtendedPropsPart extends Part {
   props: ExtendedPropsDeclaration;

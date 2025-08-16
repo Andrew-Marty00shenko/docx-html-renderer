@@ -1,7 +1,7 @@
-import { OpenXmlPackage } from "../common/open-xml-package";
+import type { OpenXmlPackage } from "../common/open-xml-package";
 import { Part } from "../common/part";
-import { DocumentParser } from "../document-parser";
-import { IDomStyle } from "../document/style";
+import type { DocumentParser } from "../document-parser";
+import type { IDomStyle } from "../document/style";
 
 export class StylesPart extends Part {
   styles: IDomStyle[];

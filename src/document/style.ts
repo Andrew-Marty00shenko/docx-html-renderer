@@ -1,5 +1,5 @@
-import { ParagraphProperties } from "./paragraph";
-import { RunProperties } from "./run";
+import type { ParagraphProperties } from "./paragraph";
+import type { RunProperties } from "./run";
 
 export interface IDomStyle {
   id: string;

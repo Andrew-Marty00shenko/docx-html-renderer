@@ -1,7 +1,8 @@
-import { OpenXmlPackage } from "../common/open-xml-package";
+import type { OpenXmlPackage } from "../common/open-xml-package";
 import { Part } from "../common/part";
-import { DocumentParser } from "../document-parser";
-import { WmlBaseNote, WmlEndnote, WmlFootnote } from "./elements";
+import type { DocumentParser } from "../document-parser";
+import type { WmlBaseNote} from "./elements";
+import { WmlEndnote, WmlFootnote } from "./elements";
 
 export class BaseNotePart<T extends WmlBaseNote> extends Part {
   protected _documentParser: DocumentParser;

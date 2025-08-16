@@ -1,6 +1,6 @@
 import { serializeXmlString } from "../parser/xml-parser";
-import { OpenXmlPackage } from "./open-xml-package";
-import { Relationship } from "./relationship";
+import type { OpenXmlPackage } from "./open-xml-package";
+import type { Relationship } from "./relationship";
 
 export class Part {
   protected _xmlDocument: Document;
@@ -29,5 +29,6 @@ export class Part {
     this._package.update(this.path, serializeXmlString(this._xmlDocument));
   }
 
-  protected parseXml(root: Element) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected parseXml(_root: Element) {}
 }

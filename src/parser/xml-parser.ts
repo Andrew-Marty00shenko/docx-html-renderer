@@ -1,7 +1,8 @@
-import {
+import type {
   Length,
+  LengthUsageType} from "../document/common";
+import {
   LengthUsage,
-  LengthUsageType,
   convertLength,
   convertBoolean,
 } from "../document/common";

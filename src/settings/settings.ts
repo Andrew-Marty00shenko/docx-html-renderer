@@ -1,6 +1,5 @@
-import { DocumentParser } from "../document-parser";
-import { Length } from "../document/common";
-import { XmlParser } from "../parser/xml-parser";
+import type { Length } from "../document/common";
+import type { XmlParser } from "../parser/xml-parser";
 
 export interface WmlSettings {
   defaultTabStop: Length;

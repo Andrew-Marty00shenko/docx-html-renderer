@@ -1,4 +1,4 @@
-import { XmlParser } from "../parser/xml-parser";
+import type { XmlParser } from "../parser/xml-parser";
 
 export interface CorePropsDeclaration {
   title: string;
@@ -38,7 +38,9 @@ export function parseCoreProps(root: Element, xmlParser: XmlParser): CorePropsDe
         result.lastModifiedBy = el.textContent;
         break;
       case "revision":
-        el.textContent && (result.revision = parseInt(el.textContent));
+        if (el.textContent) {
+          result.revision = parseInt(el.textContent);
+        }
         break;
     }
   }

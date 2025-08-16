@@ -1,6 +1,8 @@
-import globalXmlParser, { XmlParser } from "../parser/xml-parser";
-import { Borders, parseBorders } from "./border";
-import { Length } from "./common";
+import type { XmlParser } from "../parser/xml-parser";
+import globalXmlParser from "../parser/xml-parser";
+import type { Borders} from "./border";
+import { parseBorders } from "./border";
+import type { Length } from "./common";
 
 export interface Column {
   space: Length;

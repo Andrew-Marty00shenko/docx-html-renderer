@@ -1,5 +1,6 @@
 import { Part } from "../common/part";
-import { CorePropsDeclaration, parseCoreProps } from "./core-props";
+import type { CorePropsDeclaration} from "./core-props";
+import { parseCoreProps } from "./core-props";
 
 export class CorePropsPart extends Part {
   props: CorePropsDeclaration;

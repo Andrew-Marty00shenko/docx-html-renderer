@@ -1,4 +1,4 @@
-import { OpenXmlElement } from "./dom";
+import type { OpenXmlElement } from "./dom";
 
 export interface WmlInstructionText extends OpenXmlElement {
   text: string;
