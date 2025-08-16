@@ -1,6 +1,6 @@
 {
   "name": "docx-html-renderer",
-  "version": "0.0.9",
+  "version": "0.1.1",
   "description": "Lightweight js Library to convert DOCX to HTML",
   "keywords": [
     "react",
@@ -14,7 +14,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Andrew-Marty00shenko/docx2html"
+    "url": "https://github.com/Andrew-Marty00shenko/docx-html-renderer"
   },
   "type": "module",
   "files": [
