@@ -27,7 +27,9 @@
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"No tests specified\" && exit 0",
+    "prepublishOnly": "npm run build"
   },
   "main": "lib/docx2html.js",
   "module": "lib/docx2html.mjs",
