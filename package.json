@@ -1,6 +1,6 @@
 {
-  "name": "docx2html",
-  "version": "0.0.1",
+  "name": "docx-html-renderer",
+  "version": "0.0.2",
   "description": "Lightweight React Library to convert DOCX to HTML",
   "keywords": [
     "react",
@@ -33,14 +33,14 @@
     "knip": "knip",
     "knip:fix": "knip --fix"
   },
-  "main": "lib/docx2html.js",
-  "module": "lib/docx2html.mjs",
-  "types": "lib/docx2html.d.ts",
+  "main": "lib/docx-html-renderer.js",
+  "module": "lib/docx-html-renderer.mjs",
+  "types": "lib/docx-html-renderer.d.ts",
   "exports": {
     ".": {
-      "types": "./lib/docx2html.d.ts",
-      "require": "./lib/docx2html.js",
-      "import": "./lib/docx2html.mjs"
+      "types": "./lib/docx-html-renderer.d.ts",
+      "require": "./lib/docx-html-renderer.js",
+      "import": "./lib/docx-html-renderer.mjs"
     }
   },
   "devDependencies": {
