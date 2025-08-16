@@ -1,1 +1,1 @@
-export { DocumentParser, DocumentParserOptions } from "./document-parser";
+export * from "./document-parser";

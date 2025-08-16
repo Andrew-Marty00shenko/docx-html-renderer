@@ -1,6 +1,6 @@
 import type { XmlParser } from "../parser/xml-parser";
 import globalXmlParser from "../parser/xml-parser";
-import type { Borders} from "./border";
+import type { Borders } from "./border";
 import { parseBorders } from "./border";
 import type { Length } from "./common";
 
@@ -53,13 +53,7 @@ export interface PageMargins {
   gutter: Length;
 }
 
-export enum SectionType {
-  Continuous = "continuous",
-  NextPage = "nextPage",
-  NextColumn = "nextColumn",
-  EvenPage = "evenPage",
-  OddPage = "oddPage",
-}
+export type SectionType = "continuous" | "nextPage" | "nextColumn" | "evenPage" | "oddPage";
 
 export interface FooterHeaderReference {
   id: string;
@@ -150,7 +144,7 @@ function parseColumns(elem: Element, xml: XmlParser): Columns {
         ({
           width: xml.lengthAttr(e, "w"),
           space: xml.lengthAttr(e, "space"),
-        } as Column),
+        }) as Column,
     ),
   };
 }

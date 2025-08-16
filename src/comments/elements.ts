@@ -1,7 +1,8 @@
-import { DomType, OpenXmlElementBase } from "../document";
+import type { DomType } from "../document";
+import { OpenXmlElementBase } from "../document";
 
 export class WmlComment extends OpenXmlElementBase {
-  type = DomType.Comment;
+  type: DomType = "comment";
   id: string;
   author: string;
   initials: string;
@@ -9,7 +10,7 @@ export class WmlComment extends OpenXmlElementBase {
 }
 
 export class WmlCommentReference extends OpenXmlElementBase {
-  type = DomType.CommentReference;
+  type: DomType = "commentReference";
 
   constructor(public id?: string) {
     super();
@@ -17,14 +18,14 @@ export class WmlCommentReference extends OpenXmlElementBase {
 }
 
 export class WmlCommentRangeStart extends OpenXmlElementBase {
-  type = DomType.CommentRangeStart;
+  type: DomType = "commentRangeStart";
 
   constructor(public id?: string) {
     super();
   }
 }
 export class WmlCommentRangeEnd extends OpenXmlElementBase {
-  type = DomType.CommentRangeEnd;
+  type: DomType = "commentRangeEnd";
 
   constructor(public id?: string) {
     super();

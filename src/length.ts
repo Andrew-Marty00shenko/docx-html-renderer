@@ -12,7 +12,7 @@ export class Length {
     return new Length(value, type);
   }
 
-  static from(val: any): Length {
+  static from(val: unknown): Length {
     if (isString(val)) return Length.parse(val);
     if (val instanceof Length) return val;
 

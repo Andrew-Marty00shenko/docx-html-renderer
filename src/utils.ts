@@ -24,11 +24,14 @@ export function resolvePath(path: string, base: string): string {
   }
 }
 
-export function keyBy<T = any>(array: T[], by: (x: T) => any): Record<any, T> {
-  return array.reduce((a, x) => {
-    a[by(x)] = x;
-    return a;
-  }, {});
+export function keyBy<T>(array: T[], by: (x: T) => string | number): Record<string, T> {
+  return array.reduce(
+    (a, x) => {
+      a[by(x).toString()] = x;
+      return a;
+    },
+    {} as Record<string, T>,
+  );
 }
 
 export function blobToBase64(blob: Blob): Promise<string> {
@@ -40,7 +43,7 @@ export function blobToBase64(blob: Blob): Promise<string> {
   });
 }
 
-export function isObject(item) {
+export function isObject(item: unknown): item is Record<string, unknown> {
   return item && typeof item === "object" && !Array.isArray(item);
 }
 
@@ -48,7 +51,10 @@ export function isString(item: unknown): item is string {
   return typeof item === "string" || item instanceof String;
 }
 
-export function mergeDeep(target, ...sources) {
+export function mergeDeep(
+  target: Record<string, unknown>,
+  ...sources: Record<string, unknown>[]
+): Record<string, unknown> {
   if (!sources.length) return target;
 
   const source = sources.shift();
@@ -57,7 +63,7 @@ export function mergeDeep(target, ...sources) {
     for (const key in source) {
       if (isObject(source[key])) {
         const val = target[key] ?? (target[key] = {});
-        mergeDeep(val, source[key]);
+        mergeDeep(val as Record<string, unknown>, source[key] as Record<string, unknown>);
       } else {
         target[key] = source[key];
       }
@@ -88,6 +94,6 @@ export function asArray<T>(val: T | T[]): T[] {
   return Array.isArray(val) ? val : [val];
 }
 
-export function clamp(val, min, max) {
+export function clamp(val: number, min: number, max: number): number {
   return min > val ? min : max < val ? max : val;
 }

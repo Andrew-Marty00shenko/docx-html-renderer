@@ -24,8 +24,9 @@ import type {
   FooterHeaderReference,
   SectionProperties,
   IDomStyle,
+  ParagraphTab,
 } from "./document";
-import { calculateTotalElementHeight, getComputedStyles, pxToPt, DomType } from "./document";
+import { calculateTotalElementHeight, getComputedStyles, pxToPt } from "./document";
 import type { FontTablePart } from "./font-table";
 import type { BaseHeaderFooterPart } from "./header-footer";
 import type { WmlBaseNote, WmlFootnote } from "./notes";
@@ -52,7 +53,10 @@ interface Section {
   pageBreak: boolean;
 }
 
-declare const Highlight: any;
+declare const Highlight: {
+  new (): unknown;
+  prototype: unknown;
+};
 
 type CellVerticalMergeType = Record<number, HTMLTableCellElement>;
 
@@ -90,16 +94,16 @@ export class HtmlRenderer {
   endnoteMap: Record<string, WmlFootnote> = {};
   currentFootnoteIds: string[] = [];
   currentEndnoteIds: string[] = [];
-  usedHeaderFooterParts: any[] = [];
+  usedHeaderFooterParts: string[] = [];
 
   defaultTabSize = "";
-  currentTabs: any[] = [];
+  currentTabs: { stops: unknown; span: HTMLElement }[] = [];
 
-  commentHighlight: any;
+  commentHighlight: unknown;
   commentMap: Record<string, Range> = {};
 
-  tasks: Promise<any>[] = [];
-  postRenderTasks: any[] = [];
+  tasks: Promise<unknown>[] = [];
+  postRenderTasks: (() => void)[] = [];
 
   constructor(public htmlDocument: Document) {}
 
@@ -180,7 +184,9 @@ export class HtmlRenderer {
     }
 
     if (this.commentHighlight && options.renderComments) {
-      (CSS as any).highlights.set(`${this.className}-comments`, this.commentHighlight);
+      (
+        CSS as unknown as { highlights: { set: (name: string, highlight: unknown) => void } }
+      ).highlights.set(`${this.className}-comments`, this.commentHighlight);
     }
 
     this.postRenderTasks.forEach((task) => task());
@@ -497,7 +503,7 @@ export class HtmlRenderer {
   }
 
   renderTheme(themePart: ThemePart, styleContainer: HTMLElement) {
-    const variables = {} as Record<string, any>;
+    const variables = {} as Record<string, string>;
     const fontScheme = themePart.theme?.fontScheme;
 
     if (fontScheme) {
@@ -527,7 +533,7 @@ export class HtmlRenderer {
       for (const ref of font.embedFontRefs) {
         this.tasks.push(
           this.document.loadFont(ref.id, ref.key).then((fontData) => {
-            const cssValues: Record<string, any> = {
+            const cssValues: Record<string, string> = {
               "font-family": encloseFontFamily(font.name),
               src: `url(${fontData})`,
             };
@@ -598,12 +604,12 @@ export class HtmlRenderer {
     }
   }
 
-  processElement(element: OpenXmlElement) {
+  processElement(element: OpenXmlElement | DocumentElement) {
     if (element.children) {
       for (const el of element.children) {
         el.parent = element;
 
-        if (el.type == DomType.Table) {
+        if (el.type == "table") {
           this.processTable(el);
         } else {
           this.processElement(el);
@@ -775,10 +781,10 @@ export class HtmlRenderer {
       const [el] = this.renderElements([part.rootElement], into) as HTMLElement[];
 
       if (props?.pageMargins) {
-        if (part.rootElement.type === DomType.Header) {
+        if (part.rootElement.type === "header") {
           el.style.marginTop = `calc(${props.pageMargins.header} - ${props.pageMargins.top})`;
           el.style.minHeight = `calc(${props.pageMargins.top} - ${props.pageMargins.header})`;
-        } else if (part.rootElement.type === DomType.Footer) {
+        } else if (part.rootElement.type === "footer") {
           el.style.marginBottom = `calc(${props.pageMargins.footer} - ${props.pageMargins.bottom})`;
           el.style.minHeight = `calc(${props.pageMargins.bottom} - ${props.pageMargins.footer})`;
         }
@@ -791,7 +797,7 @@ export class HtmlRenderer {
   }
 
   isPageBreakElement(elem: OpenXmlElement): boolean {
-    if (elem.type != DomType.Break) {
+    if (elem.type != "break") {
       return false;
     }
 
@@ -821,7 +827,7 @@ export class HtmlRenderer {
     const result = [current];
 
     for (const elem of elements) {
-      if (elem.type == DomType.Paragraph) {
+      if (elem.type == "paragraph") {
         const style = this.findStyle((elem as WmlParagraph).styleName);
 
         if (style?.paragraphProps?.pageBreakBefore) {
@@ -833,7 +839,7 @@ export class HtmlRenderer {
 
       current.elements.push(elem);
 
-      if (elem.type == DomType.Paragraph) {
+      if (elem.type == "paragraph") {
         const paragraph = elem as WmlParagraph;
 
         const sectProps = paragraph.sectionProps;
@@ -1082,165 +1088,165 @@ section.${className}>footer { z-index: 1; }
 
   renderElement(elem: OpenXmlElement): Nullable<Node | Node[]> {
     switch (elem.type) {
-      case DomType.Paragraph:
+      case "paragraph":
         return this.renderParagraph(elem as WmlParagraph);
 
-      case DomType.BookmarkStart:
+      case "bookmarkStart":
         return this.renderBookmarkStart(elem as WmlBookmarkStart);
 
-      case DomType.BookmarkEnd:
+      case "bookmarkEnd":
         return null; //ignore bookmark end
 
-      case DomType.Run:
+      case "run":
         return this.renderRun(elem as WmlRun);
 
-      case DomType.Table:
+      case "table":
         return this.renderTable(elem);
 
-      case DomType.Row:
+      case "row":
         return this.renderTableRow(elem);
 
-      case DomType.Cell:
+      case "cell":
         return this.renderTableCell(elem);
 
-      case DomType.Hyperlink:
+      case "hyperlink":
         return this.renderHyperlink(elem);
 
-      case DomType.SmartTag:
+      case "smartTag":
         return this.renderSmartTag(elem);
 
-      case DomType.Drawing:
+      case "drawing":
         return this.renderDrawing(elem);
 
-      case DomType.Image:
+      case "image":
         return this.renderImage(elem as IDomImage);
 
-      case DomType.Text:
+      case "text":
         return this.renderText(elem as WmlText);
 
-      case DomType.DeletedText:
+      case "deletedText":
         return this.renderDeletedText(elem as WmlText);
 
-      case DomType.Tab:
+      case "tab":
         return this.renderTab(elem);
 
-      case DomType.Symbol:
+      case "symbol":
         return this.renderSymbol(elem as WmlSymbol);
 
-      case DomType.Break:
+      case "break":
         return this.renderBreak(elem as WmlBreak);
 
-      case DomType.Footer:
+      case "footer":
         return this.renderContainer(elem, "footer");
 
-      case DomType.Header:
+      case "header":
         return this.renderContainer(elem, "header");
 
-      case DomType.Footnote:
-      case DomType.Endnote:
+      case "footnote":
+      case "endnote":
         return this.renderContainer(elem, "li");
 
-      case DomType.FootnoteReference:
+      case "footnoteReference":
         return this.renderFootnoteReference(elem as WmlNoteReference);
 
-      case DomType.EndnoteReference:
+      case "endnoteReference":
         return this.renderEndnoteReference(elem as WmlNoteReference);
 
-      case DomType.NoBreakHyphen:
+      case "noBreakHyphen":
         return this.createElement("wbr");
 
-      case DomType.VmlPicture:
+      case "vmlPicture":
         return this.renderVmlPicture(elem);
 
-      case DomType.VmlElement:
+      case "vmlElement":
         return this.renderVmlElement(elem as VmlElement);
 
-      case DomType.MmlMath:
+      case "mmlMath":
         return this.renderContainerNS(elem, ns.mathML, "math", { xmlns: ns.mathML });
 
-      case DomType.MmlMathParagraph:
+      case "mmlMathParagraph":
         return this.renderContainer(elem, "span");
 
-      case DomType.MmlFraction:
+      case "mmlFraction":
         return this.renderContainerNS(elem, ns.mathML, "mfrac");
 
-      case DomType.MmlBase:
+      case "mmlBase":
         return this.renderContainerNS(
           elem,
           ns.mathML,
-          elem?.parent?.type == DomType.MmlMatrixRow ? "mtd" : "mrow",
+          elem?.parent?.type == "mmlMatrixRow" ? "mtd" : "mrow",
         );
 
-      case DomType.MmlNumerator:
-      case DomType.MmlDenominator:
-      case DomType.MmlFunction:
-      case DomType.MmlLimit:
-      case DomType.MmlBox:
+      case "mmlNumerator":
+      case "mmlDenominator":
+      case "mmlFunction":
+      case "mmlLimit":
+      case "mmlBox":
         return this.renderContainerNS(elem, ns.mathML, "mrow");
 
-      case DomType.MmlGroupChar:
+      case "mmlGroupChar":
         return this.renderMmlGroupChar(elem);
 
-      case DomType.MmlLimitLower:
+      case "mmlLimitLower":
         return this.renderContainerNS(elem, ns.mathML, "munder");
 
-      case DomType.MmlMatrix:
+      case "mmlMatrix":
         return this.renderContainerNS(elem, ns.mathML, "mtable");
 
-      case DomType.MmlMatrixRow:
+      case "mmlMatrixRow":
         return this.renderContainerNS(elem, ns.mathML, "mtr");
 
-      case DomType.MmlRadical:
+      case "mmlRadical":
         return this.renderMmlRadical(elem);
 
-      case DomType.MmlSuperscript:
+      case "mmlSuperscript":
         return this.renderContainerNS(elem, ns.mathML, "msup");
 
-      case DomType.MmlSubscript:
+      case "mmlSubscript":
         return this.renderContainerNS(elem, ns.mathML, "msub");
 
-      case DomType.MmlDegree:
-      case DomType.MmlSuperArgument:
-      case DomType.MmlSubArgument:
+      case "mmlDegree":
+      case "mmlSuperArgument":
+      case "mmlSubArgument":
         return this.renderContainerNS(elem, ns.mathML, "mn");
 
-      case DomType.MmlFunctionName:
+      case "mmlFunctionName":
         return this.renderContainerNS(elem, ns.mathML, "ms");
 
-      case DomType.MmlDelimiter:
+      case "mmlDelimiter":
         return this.renderMmlDelimiter(elem);
 
-      case DomType.MmlRun:
+      case "mmlRun":
         return this.renderMmlRun(elem);
 
-      case DomType.MmlNary:
+      case "mmlNary":
         return this.renderMmlNary(elem);
 
-      case DomType.MmlPreSubSuper:
+      case "mmlPreSubSuper":
         return this.renderMmlPreSubSuper(elem);
 
-      case DomType.MmlBar:
+      case "mmlBar":
         return this.renderMmlBar(elem);
 
-      case DomType.MmlEquationArray:
+      case "mmlEquationArray":
         return this.renderMllList(elem);
 
-      case DomType.Inserted:
+      case "inserted":
         return this.renderInserted(elem);
 
-      case DomType.Deleted:
+      case "deleted":
         return this.renderDeleted(elem);
 
-      case DomType.CommentRangeStart:
+      case "commentRangeStart":
         return this.renderCommentRangeStart(elem);
 
-      case DomType.CommentRangeEnd:
+      case "commentRangeEnd":
         return this.renderCommentRangeEnd(elem);
 
-      case DomType.CommentReference:
+      case "commentReference":
         return this.renderCommentReference(elem);
 
-      case DomType.AltChunk:
+      case "altChunk":
         return this.renderAltChunk(elem);
     }
 
@@ -1266,7 +1272,7 @@ section.${className}>footer { z-index: 1; }
   renderContainer<T extends keyof HTMLElementTagNameMap>(
     elem: OpenXmlElement,
     tagName: T,
-    props?: Partial<Record<keyof HTMLElementTagNameMap[T], any>>,
+    props?: Partial<Record<keyof HTMLElementTagNameMap[T], unknown>>,
   ): HTMLElementTagNameMap[T] {
     return this.createElement<T>(
       tagName,
@@ -1281,7 +1287,7 @@ section.${className}>footer { z-index: 1; }
     elem: OpenXmlElement,
     ns: string,
     tagName: string,
-    props?: Record<string, any>,
+    props?: Record<string, unknown>,
   ) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -1307,11 +1313,14 @@ section.${className}>footer { z-index: 1; }
     return result;
   }
 
-  renderRunProperties(style: any, props: RunProperties) {
-    this.renderCommonProperties(style, props);
+  renderRunProperties(style: IDomStyle, props: RunProperties) {
+    this.renderCommonProperties(style as unknown as Record<string, unknown>, props);
   }
 
-  renderCommonProperties(style: any, props: CommonProperties) {
+  renderCommonProperties(
+    style: Record<string, unknown> | CSSStyleDeclaration,
+    props: CommonProperties,
+  ) {
     if (props == null) return;
 
     if (props.color) {
@@ -1354,7 +1363,7 @@ section.${className}>footer { z-index: 1; }
     if (!this.options.renderComments) return null;
 
     const rng = new Range();
-    this.commentHighlight?.add(rng);
+    (this.commentHighlight as { add: (range: Range) => void })?.add(rng);
 
     const result = this.htmlDocument.createComment(`start of comment #${commentStart.id}`);
     this.later(() => rng.setStart(result, 0));
@@ -1519,7 +1528,7 @@ section.${className}>footer { z-index: 1; }
 
     if (this.options.experimental) {
       tabSpan.className = this.tabStopClass();
-      const stops = findParent<WmlParagraph>(elem, DomType.Paragraph)?.tabs;
+      const stops = findParent<WmlParagraph>(elem, "paragraph")?.tabs;
       this.currentTabs.push({ stops, span: tabSpan });
     }
 
@@ -1541,7 +1550,7 @@ section.${className}>footer { z-index: 1; }
     this.renderStyleValues(elem.cssStyle, result);
 
     if (elem.verticalAlign) {
-      const wrapper = this.createElement(elem.verticalAlign as any);
+      const wrapper = this.createElement(elem.verticalAlign as keyof HTMLElementTagNameMap);
       this.renderElements(elem.children, wrapper);
       result.appendChild(wrapper);
     } else {
@@ -1721,7 +1730,7 @@ section.${className}>footer { z-index: 1; }
     container.appendChild(result);
 
     requestAnimationFrame(() => {
-      const bb = (container.firstElementChild as any).getBBox();
+      const bb = (container.firstElementChild as SVGElement & { getBBox(): DOMRect }).getBBox();
 
       container.setAttribute("width", `${Math.ceil(bb.x + bb.width)}`);
       container.setAttribute("height", `${Math.ceil(bb.y + bb.height)}`);
@@ -1730,25 +1739,30 @@ section.${className}>footer { z-index: 1; }
     return container;
   }
 
-  renderVmlChildElement(elem: VmlElement): any {
-    const result = this.createSvgElement(elem.tagName as any);
+  renderVmlChildElement(elem: VmlElement): Element {
+    const result = this.createSvgElement(elem.tagName as keyof SVGElementTagNameMap);
     Object.entries(elem.attrs).forEach(([key, value]) => result.setAttribute(key, value));
 
     for (const child of elem.children) {
-      if (child.type == DomType.VmlElement) {
+      if (child.type == "vmlElement") {
         result.appendChild(this.renderVmlChildElement(child as VmlElement));
       } else {
-        result.appendChild(...asArray(this.renderElement(child as any)));
+        const rendered = asArray(this.renderElement(child as OpenXmlElement));
+        if (Array.isArray(rendered)) {
+          rendered.forEach((item) => result.appendChild(item));
+        } else {
+          result.appendChild(rendered);
+        }
       }
     }
 
     return result;
   }
 
-  renderMmlRadical(elem: OpenXmlElement): HTMLElement {
+  renderMmlRadical(elem: OpenXmlElement): Element {
     const elemChild = elem.children;
 
-    const base = elemChild.find((el) => el.type == DomType.MmlBase);
+    const base = elemChild.find((el) => el.type == "mmlBase");
 
     if (elem.props?.hideDegree) {
       return this.createElementNS(
@@ -1757,23 +1771,23 @@ section.${className}>footer { z-index: 1; }
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         null,
-        this.renderElements([base]),
+        this.renderElements([base]) as ChildType[],
       );
     }
 
-    const degree = elemChild.find((el) => el.type == DomType.MmlDegree);
+    const degree = elemChild.find((el) => el.type == "mmlDegree");
     return this.createElementNS(
       ns.mathML,
       "mroot",
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       null,
-      this.renderElements([base, degree]),
+      this.renderElements([base, degree]) as ChildType[],
     );
   }
 
-  renderMmlDelimiter(elem: OpenXmlElement): HTMLElement {
-    const children = [];
+  renderMmlDelimiter(elem: OpenXmlElement): Element {
+    const children: ChildType[] = [];
 
     children.push(
       this.createElementNS(
@@ -1782,10 +1796,10 @@ section.${className}>footer { z-index: 1; }
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         null,
-        [elem.props.beginChar ?? "("],
+        [(elem.props.beginChar as string) ?? "("],
       ),
     );
-    children.push(...this.renderElements(elem.children));
+    children.push(...(this.renderElements(elem.children) as ChildType[]));
     children.push(
       this.createElementNS(
         ns.mathML,
@@ -1793,7 +1807,7 @@ section.${className}>footer { z-index: 1; }
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         null,
-        [elem.props.endChar ?? ")"],
+        [(elem.props.endChar as string) ?? ")"],
       ),
     );
 
@@ -1807,12 +1821,12 @@ section.${className}>footer { z-index: 1; }
     );
   }
 
-  renderMmlNary(elem: OpenXmlElement): HTMLElement {
-    const children = [];
+  renderMmlNary(elem: OpenXmlElement): Element {
+    const children: ChildType[] = [];
     const grouped = keyBy(elem.children, (el) => el.type);
 
-    const sup = grouped[DomType.MmlSuperArgument];
-    const sub = grouped[DomType.MmlSubArgument];
+    const sup = grouped["mmlSuperArgument"];
+    const sub = grouped["mmlSubArgument"];
     const supElem = sup
       ? this.createElementNS(
           ns.mathML,
@@ -1840,7 +1854,7 @@ section.${className}>footer { z-index: 1; }
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       null,
-      [elem.props?.char ?? "\u222B"],
+      [(elem.props?.char as string) ?? "\u222B"],
     );
 
     if (supElem || subElem) {
@@ -1884,7 +1898,7 @@ section.${className}>footer { z-index: 1; }
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    children.push(...this.renderElements(grouped[DomType.MmlBase].children));
+    children.push(...(this.renderElements(grouped["mmlBase"].children) as ChildType[]));
 
     return this.createElementNS(
       ns.mathML,
@@ -1896,12 +1910,12 @@ section.${className}>footer { z-index: 1; }
     );
   }
 
-  renderMmlPreSubSuper(elem: OpenXmlElement) {
-    const children = [];
+  renderMmlPreSubSuper(elem: OpenXmlElement): Element {
+    const children: ChildType[] = [];
     const grouped = keyBy(elem.children, (el) => el.type);
 
-    const sup = grouped[DomType.MmlSuperArgument];
-    const sub = grouped[DomType.MmlSubArgument];
+    const sup = grouped["mmlSuperArgument"];
+    const sub = grouped["mmlSubArgument"];
     const supElem = sup
       ? this.createElementNS(
           ns.mathML,
@@ -1943,7 +1957,7 @@ section.${className}>footer { z-index: 1; }
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    children.push(...this.renderElements(grouped[DomType.MmlBase].children));
+    children.push(...(this.renderElements(grouped["mmlBase"].children) as ChildType[]));
 
     return this.createElementNS(
       ns.mathML,
@@ -1955,11 +1969,11 @@ section.${className}>footer { z-index: 1; }
     );
   }
 
-  renderMmlGroupChar(elem: OpenXmlElement) {
-    const tagName = elem.props.verticalJustification === "bot" ? "mover" : "munder";
+  renderMmlGroupChar(elem: OpenXmlElement): Element {
+    const tagName = (elem.props.verticalJustification as string) === "bot" ? "mover" : "munder";
     const result = this.renderContainerNS(elem, ns.mathML, tagName);
 
-    if (elem.props.char) {
+    if (elem.props.char as string) {
       result.appendChild(
         this.createElementNS(
           ns.mathML,
@@ -1967,7 +1981,7 @@ section.${className}>footer { z-index: 1; }
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           null,
-          [elem.props.char],
+          [elem.props.char as string],
         ),
       );
     }
@@ -1975,44 +1989,44 @@ section.${className}>footer { z-index: 1; }
     return result;
   }
 
-  renderMmlBar(elem: OpenXmlElement) {
+  renderMmlBar(elem: OpenXmlElement): Element {
     const result = this.renderContainerNS(elem, ns.mathML, "mrow");
 
-    switch (elem.props.position) {
+    switch (elem.props.position as string) {
       case "top":
-        result.style.textDecoration = "overline";
+        (result as HTMLElement).style.textDecoration = "overline";
         break;
       case "bottom":
-        result.style.textDecoration = "underline";
+        (result as HTMLElement).style.textDecoration = "underline";
         break;
     }
 
     return result;
   }
 
-  renderMmlRun(elem: OpenXmlElement) {
+  renderMmlRun(elem: OpenXmlElement): Element {
     const result = this.createElementNS(
       ns.mathML,
       "ms",
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       null,
-      this.renderElements(elem.children),
+      this.renderElements(elem.children) as ChildType[],
     );
 
-    this.renderClass(elem, result);
-    this.renderStyleValues(elem.cssStyle, result);
+    this.renderClass(elem, result as HTMLElement);
+    this.renderStyleValues(elem.cssStyle, result as HTMLElement);
 
     return result;
   }
 
-  renderMllList(elem: OpenXmlElement) {
+  renderMllList(elem: OpenXmlElement): Element {
     const result = this.createElementNS(ns.mathML, "mtable");
 
-    this.renderClass(elem, result);
-    this.renderStyleValues(elem.cssStyle, result);
+    this.renderClass(elem, result as HTMLElement);
+    this.renderStyleValues(elem.cssStyle, result as HTMLElement);
 
-    for (const child of this.renderElements(elem.children)) {
+    for (const child of this.renderElements(elem.children) as ChildType[]) {
       result.appendChild(
         this.createElementNS(
           ns.mathML,
@@ -2044,7 +2058,7 @@ section.${className}>footer { z-index: 1; }
       } else {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        ouput.style[key] = style[key];
+        (ouput.style as Record<string, unknown>)[key] = style[key];
       }
     }
   }
@@ -2102,7 +2116,7 @@ section.${className}>footer { z-index: 1; }
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return `"${result}${suffMap[suff] ?? ""}"`;
+    return `"${result}${(suffMap as Record<string, string>)[suff] ?? ""}"`;
   }
 
   numFormatToCssValue(format: string) {
@@ -2150,7 +2164,7 @@ section.${className}>footer { z-index: 1; }
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return mapping[format] ?? format;
+    return (mapping as Record<string, string>)[format] ?? format;
   }
 
   refreshTabStops() {
@@ -2160,7 +2174,12 @@ section.${className}>footer { z-index: 1; }
       const pixelToPoint = computePixelToPoint();
 
       for (const tab of this.currentTabs) {
-        updateTabStop(tab.span, tab.stops, this.defaultTabSize, pixelToPoint);
+        updateTabStop(
+          tab.span,
+          tab.stops as unknown as ParagraphTab[],
+          this.defaultTabSize,
+          pixelToPoint,
+        );
       }
     }, 500);
   }
@@ -2168,9 +2187,9 @@ section.${className}>footer { z-index: 1; }
   createElementNS(
     ns: string,
     tagName: string,
-    props?: Partial<Record<any, any>>,
+    props?: Partial<Record<string, unknown>>,
     children?: ChildType[],
-  ): any {
+  ): Element {
     const result = ns
       ? this.htmlDocument.createElementNS(ns, tagName)
       : this.htmlDocument.createElement(tagName);
@@ -2185,7 +2204,7 @@ section.${className}>footer { z-index: 1; }
 
   createElement<T extends keyof HTMLElementTagNameMap>(
     tagName: T,
-    props?: Partial<Record<keyof HTMLElementTagNameMap[T], any>>,
+    props?: Partial<Record<keyof HTMLElementTagNameMap[T], unknown>>,
     children?: ChildType[],
   ): HTMLElementTagNameMap[T] {
     return this.createElementNS(
@@ -2195,15 +2214,20 @@ section.${className}>footer { z-index: 1; }
       tagName,
       props,
       children,
-    );
+    ) as HTMLElementTagNameMap[T];
   }
 
   createSvgElement<T extends keyof SVGElementTagNameMap>(
     tagName: T,
-    props?: Partial<Record<keyof SVGElementTagNameMap[T], any>>,
+    props?: Partial<Record<keyof SVGElementTagNameMap[T], unknown>>,
     children?: ChildType[],
   ): SVGElementTagNameMap[T] {
-    return this.createElementNS(ns.svg, tagName, props, children);
+    return this.createElementNS(
+      ns.svg,
+      tagName,
+      props,
+      children,
+    ) as unknown as SVGElementTagNameMap[T];
   }
 
   createStyleElement(cssText: string) {
@@ -2214,7 +2238,7 @@ section.${className}>footer { z-index: 1; }
     return this.htmlDocument.createComment(text);
   }
 
-  later(func: any) {
+  later(func: () => void) {
     this.postRenderTasks.push(func);
   }
 }
@@ -2231,7 +2255,7 @@ function appendChildren(elem: Node, children: (Node | string)[]) {
   );
 }
 
-function findParent<T extends OpenXmlElement>(elem: OpenXmlElement, type: DomType): T {
+function findParent<T extends OpenXmlElement>(elem: OpenXmlElement, type: string): T {
   let parent = elem.parent;
 
   while (parent != null && parent.type != type) parent = parent.parent;

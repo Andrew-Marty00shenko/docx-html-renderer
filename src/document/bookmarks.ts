@@ -1,6 +1,5 @@
 import type { XmlParser } from "../parser";
 import type { OpenXmlElement } from "./dom";
-import { DomType } from "./dom";
 
 export interface WmlBookmarkStart extends OpenXmlElement {
   id: string;
@@ -15,7 +14,7 @@ export interface WmlBookmarkEnd extends OpenXmlElement {
 
 export function parseBookmarkStart(elem: Element, xml: XmlParser): WmlBookmarkStart {
   return {
-    type: DomType.BookmarkStart,
+    type: "bookmarkStart",
     id: xml.attr(elem, "id"),
     name: xml.attr(elem, "name"),
     colFirst: xml.intAttr(elem, "colFirst"),
@@ -25,7 +24,7 @@ export function parseBookmarkStart(elem: Element, xml: XmlParser): WmlBookmarkSt
 
 export function parseBookmarkEnd(elem: Element, xml: XmlParser): WmlBookmarkEnd {
   return {
-    type: DomType.BookmarkEnd,
+    type: "bookmarkEnd",
     id: xml.attr(elem, "id"),
   };
 }

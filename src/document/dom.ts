@@ -1,73 +1,72 @@
-export enum DomType {
-  Document = "document",
-  Paragraph = "paragraph",
-  Run = "run",
-  Break = "break",
-  NoBreakHyphen = "noBreakHyphen",
-  Table = "table",
-  Row = "row",
-  Cell = "cell",
-  Hyperlink = "hyperlink",
-  SmartTag = "smartTag",
-  Drawing = "drawing",
-  Image = "image",
-  Text = "text",
-  Tab = "tab",
-  Symbol = "symbol",
-  BookmarkStart = "bookmarkStart",
-  BookmarkEnd = "bookmarkEnd",
-  Footer = "footer",
-  Header = "header",
-  FootnoteReference = "footnoteReference",
-  EndnoteReference = "endnoteReference",
-  Footnote = "footnote",
-  Endnote = "endnote",
-  SimpleField = "simpleField",
-  ComplexField = "complexField",
-  Instruction = "instruction",
-  VmlPicture = "vmlPicture",
-  MmlMath = "mmlMath",
-  MmlMathParagraph = "mmlMathParagraph",
-  MmlFraction = "mmlFraction",
-  MmlFunction = "mmlFunction",
-  MmlFunctionName = "mmlFunctionName",
-  MmlNumerator = "mmlNumerator",
-  MmlDenominator = "mmlDenominator",
-  MmlRadical = "mmlRadical",
-  MmlBase = "mmlBase",
-  MmlDegree = "mmlDegree",
-  MmlSuperscript = "mmlSuperscript",
-  MmlSubscript = "mmlSubscript",
-  MmlPreSubSuper = "mmlPreSubSuper",
-  MmlSubArgument = "mmlSubArgument",
-  MmlSuperArgument = "mmlSuperArgument",
-  MmlNary = "mmlNary",
-  MmlDelimiter = "mmlDelimiter",
-  MmlRun = "mmlRun",
-  MmlEquationArray = "mmlEquationArray",
-  MmlLimit = "mmlLimit",
-  MmlLimitLower = "mmlLimitLower",
-  MmlMatrix = "mmlMatrix",
-  MmlMatrixRow = "mmlMatrixRow",
-  MmlBox = "mmlBox",
-  MmlBar = "mmlBar",
-  MmlGroupChar = "mmlGroupChar",
-  VmlElement = "vmlElement",
-  Inserted = "inserted",
-  Deleted = "deleted",
-  DeletedText = "deletedText",
-  Comment = "comment",
-  CommentReference = "commentReference",
-  CommentRangeStart = "commentRangeStart",
-  CommentRangeEnd = "commentRangeEnd",
-  AltChunk = "altChunk",
-}
+export type DomType =
+  | "document"
+  | "paragraph"
+  | "run"
+  | "break"
+  | "noBreakHyphen"
+  | "table"
+  | "row"
+  | "cell"
+  | "hyperlink"
+  | "smartTag"
+  | "drawing"
+  | "image"
+  | "text"
+  | "tab"
+  | "symbol"
+  | "bookmarkStart"
+  | "bookmarkEnd"
+  | "footer"
+  | "header"
+  | "footnoteReference"
+  | "endnoteReference"
+  | "footnote"
+  | "endnote"
+  | "simpleField"
+  | "complexField"
+  | "instruction"
+  | "vmlPicture"
+  | "mmlMath"
+  | "mmlMathParagraph"
+  | "mmlFraction"
+  | "mmlFunction"
+  | "mmlFunctionName"
+  | "mmlNumerator"
+  | "mmlDenominator"
+  | "mmlRadical"
+  | "mmlBase"
+  | "mmlDegree"
+  | "mmlSuperscript"
+  | "mmlSubscript"
+  | "mmlPreSubSuper"
+  | "mmlSubArgument"
+  | "mmlSuperArgument"
+  | "mmlNary"
+  | "mmlDelimiter"
+  | "mmlRun"
+  | "mmlEquationArray"
+  | "mmlLimit"
+  | "mmlLimitLower"
+  | "mmlMatrix"
+  | "mmlMatrixRow"
+  | "mmlBox"
+  | "mmlBar"
+  | "mmlGroupChar"
+  | "vmlElement"
+  | "inserted"
+  | "deleted"
+  | "deletedText"
+  | "comment"
+  | "commentReference"
+  | "commentRangeStart"
+  | "commentRangeEnd"
+  | "altChunk";
 
 export interface OpenXmlElement {
   type: DomType;
   children?: OpenXmlElement[];
   cssStyle?: Record<string, string>;
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
 
   styleName?: string; //style name
   className?: string; //class mods
@@ -79,7 +78,7 @@ export abstract class OpenXmlElementBase implements OpenXmlElement {
   type: DomType;
   children?: OpenXmlElement[] = [];
   cssStyle?: Record<string, string> = {};
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
 
   className?: string;
   styleName?: string;

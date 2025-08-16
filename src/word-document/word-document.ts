@@ -2,7 +2,6 @@ import type { OutputType } from "jszip";
 
 import type { DocumentParser } from "../document-parser";
 import type { Relationship } from "../common";
-import { RelationshipTypes } from "../common";
 import type { Part } from "../common";
 import { FontTablePart } from "../font-table";
 import { OpenXmlPackage } from "../common";
@@ -27,10 +26,22 @@ interface WordDocumentOptions {
 }
 
 const topLevelRels = [
-  { type: RelationshipTypes.OfficeDocument, target: "word/document.xml" },
-  { type: RelationshipTypes.ExtendedProperties, target: "docProps/app.xml" },
-  { type: RelationshipTypes.CoreProperties, target: "docProps/core.xml" },
-  { type: RelationshipTypes.CustomProperties, target: "docProps/custom.xml" },
+  {
+    type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
+    target: "word/document.xml",
+  },
+  {
+    type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties",
+    target: "docProps/app.xml",
+  },
+  {
+    type: "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties",
+    target: "docProps/core.xml",
+  },
+  {
+    type: "http://schemas.openxmlformats.org/package/2006/relationships/metadata/custom-properties",
+    target: "docProps/custom.xml",
+  },
 ];
 
 export class WordDocument {
@@ -91,63 +102,63 @@ export class WordDocument {
     let part: Part = null;
 
     switch (type) {
-      case RelationshipTypes.OfficeDocument:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument":
         this.documentPart = part = new DocumentPart(this._package, path, this._parser);
         break;
 
-      case RelationshipTypes.FontTable:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable":
         this.fontTablePart = part = new FontTablePart(this._package, path);
         break;
 
-      case RelationshipTypes.Numbering:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering":
         this.numberingPart = part = new NumberingPart(this._package, path, this._parser);
         break;
 
-      case RelationshipTypes.Styles:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles":
         this.stylesPart = part = new StylesPart(this._package, path, this._parser);
         break;
 
-      case RelationshipTypes.Theme:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme":
         this.themePart = part = new ThemePart(this._package, path);
         break;
 
-      case RelationshipTypes.Footnotes:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes":
         this.footnotesPart = part = new FootnotesPart(this._package, path, this._parser);
         break;
 
-      case RelationshipTypes.Endnotes:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/endnotes":
         this.endnotesPart = part = new EndnotesPart(this._package, path, this._parser);
         break;
 
-      case RelationshipTypes.Footer:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer":
         part = new FooterPart(this._package, path, this._parser);
         break;
 
-      case RelationshipTypes.Header:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/header":
         part = new HeaderPart(this._package, path, this._parser);
         break;
 
-      case RelationshipTypes.CoreProperties:
+      case "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties":
         this.corePropsPart = part = new CorePropsPart(this._package, path);
         break;
 
-      case RelationshipTypes.ExtendedProperties:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties":
         this.extendedPropsPart = part = new ExtendedPropsPart(this._package, path);
         break;
 
-      case RelationshipTypes.CustomProperties:
+      case "http://schemas.openxmlformats.org/package/2006/relationships/metadata/custom-properties":
         part = new CustomPropsPart(this._package, path);
         break;
 
-      case RelationshipTypes.Settings:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings":
         this.settingsPart = part = new SettingsPart(this._package, path);
         break;
 
-      case RelationshipTypes.Comments:
+      case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments":
         this.commentsPart = part = new CommentsPart(this._package, path, this._parser);
         break;
 
-      case RelationshipTypes.CommentsExtended:
+      case "http://schemas.microsoft.com/office/2011/relationships/commentsExtended":
         this.commentsExtendedPart = part = new CommentsExtendedPart(this._package, path);
         break;
     }

@@ -21,7 +21,7 @@ export default defineConfig(({ command }) => {
       outDir: "lib",
       emptyOutDir: true,
       lib: {
-        entry: "src/docx2html.ts",
+        entry: "src/index.ts",
         name: "docx",
       },
       sourcemap: true,
