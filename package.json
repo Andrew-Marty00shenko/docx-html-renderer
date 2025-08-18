@@ -1,6 +1,6 @@
 {
   "name": "docx-html-renderer",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Lightweight js Library to convert DOCX to HTML",
   "keywords": [
     "react",
