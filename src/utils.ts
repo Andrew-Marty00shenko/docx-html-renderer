@@ -24,10 +24,16 @@ export function resolvePath(path: string, base: string): string {
   }
 }
 
-export function keyBy<T>(array: T[], by: (x: T) => string | number): Record<string, T> {
+export function keyBy<T>(
+  array: T[],
+  by: (x: T) => string | number | null | undefined,
+): Record<string, T> {
   return array.reduce(
     (a, x) => {
-      a[by(x).toString()] = x;
+      const key = by(x);
+      if (key != null) {
+        a[key.toString()] = x;
+      }
       return a;
     },
     {} as Record<string, T>,
