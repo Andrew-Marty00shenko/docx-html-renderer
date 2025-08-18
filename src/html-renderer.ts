@@ -1066,7 +1066,7 @@ section.${className}>footer { z-index: 1; }
 
       for (const subStyle of subStyles) {
         //TODO temporary disable modificators until test it well
-        let selector = `${style.target ?? ""}.${style.cssName}`; //${subStyle.mod ?? ''}
+        let selector = `${style.target ?? ""}.${style.cssName ?? ""}`; //${subStyle.mod ?? ''}
 
         if (style.target != subStyle.target) selector += ` ${subStyle.target}`;
 
