@@ -35,10 +35,10 @@
   },
   "main": "lib/docx-html-renderer.js",
   "module": "lib/docx-html-renderer.mjs",
-  "types": "lib/docx-html-renderer.d.ts",
+  "types": "lib/index.d.ts",
   "exports": {
     ".": {
-      "types": "./lib/docx-html-renderer.d.ts",
+      "types": "./lib/index.d.ts",
       "require": "./lib/docx-html-renderer.js",
       "import": "./lib/docx-html-renderer.mjs"
     }
