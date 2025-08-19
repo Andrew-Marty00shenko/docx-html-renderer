@@ -1684,33 +1684,47 @@ section.${className}>footer { z-index: 1; }
   }
 
   renderTableCell(elem: WmlTableCell) {
-    const result = this.renderContainer(elem, "td");
-
     const key = this.currentCellPosition.col;
+    const colSpan = elem.span || 1;
 
     if (elem.verticalMerge) {
-      if (elem.verticalMerge == "restart") {
+      if (elem.verticalMerge == "restart" || !this.currentVerticalMerge[key]) {
+        // Начинаем новый мерж (либо явно restart, либо первый continue без предшествующего restart)
+        const result = this.renderContainer(elem, "td");
         this.currentVerticalMerge[key] = result;
         result.rowSpan = 1;
+
+        this.renderClass(elem, result);
+        this.renderStyleValues(elem.cssStyle, result);
+
+        if (elem.span) result.colSpan = elem.span;
+
+        this.currentCellPosition.col += colSpan;
+
+        return result;
       } else if (this.currentVerticalMerge[key]) {
+        // Увеличиваем rowSpan существующей ячейки
         this.currentVerticalMerge[key].rowSpan += 1;
 
-        result.remove();
+        // Обновляем позицию, но не создаем новую ячейку
+        this.currentCellPosition.col += colSpan;
 
         return null;
       }
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // Сбрасываем мерж для этой колонки
       this.currentVerticalMerge[key] = null;
     }
+
+    // Обычная ячейка без мержа
+    const result = this.renderContainer(elem, "td");
 
     this.renderClass(elem, result);
     this.renderStyleValues(elem.cssStyle, result);
 
     if (elem.span) result.colSpan = elem.span;
 
-    this.currentCellPosition.col += result.colSpan;
+    this.currentCellPosition.col += colSpan;
 
     return result;
   }
