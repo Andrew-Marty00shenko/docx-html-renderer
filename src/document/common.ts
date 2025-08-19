@@ -12,7 +12,7 @@ export const ns = {
 type LengthType = "px" | "pt" | "%" | "";
 export type Length = string;
 
-interface Font {
+interface _Font {
   name: string;
   family: string;
 }
@@ -67,7 +67,7 @@ export function convertBoolean(val: string, defaultValue: null | boolean = false
   }
 }
 
-function convertPercentage(val: string): Nullable<number> {
+function _convertPercentage(val: string): Nullable<number> {
   return val ? parseInt(val) / 100 : null;
 }
 
@@ -98,7 +98,7 @@ export function pxToPt(px: string, dpi = 96) {
   return parseFloat(px) * (72 / dpi);
 }
 
-function ptToPx(pt: string | number, dpi = 96): number {
+function _ptToPx(pt: string | number, dpi = 96): number {
   const ptValue = typeof pt === "string" ? parseFloat(pt) : pt;
   return ptValue * (dpi / 72);
 }
