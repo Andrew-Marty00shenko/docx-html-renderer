@@ -1689,7 +1689,7 @@ section.${className}>footer { z-index: 1; }
 
     if (elem.verticalMerge) {
       if (elem.verticalMerge == "restart" || !this.currentVerticalMerge[key]) {
-        // Начинаем новый мерж (либо явно restart, либо первый continue без предшествующего restart)
+        // Start new merge (either explicit restart, or first continue without preceding restart)
         const result = this.renderContainer(elem, "td");
         this.currentVerticalMerge[key] = result;
         result.rowSpan = 1;
@@ -1703,20 +1703,20 @@ section.${className}>footer { z-index: 1; }
 
         return result;
       } else if (this.currentVerticalMerge[key]) {
-        // Увеличиваем rowSpan существующей ячейки
+        // Increase rowSpan of existing cell
         this.currentVerticalMerge[key].rowSpan += 1;
 
-        // Обновляем позицию, но не создаем новую ячейку
+        // Update position but don't create new cell
         this.currentCellPosition.col += colSpan;
 
         return null;
       }
     } else {
-      // Сбрасываем мерж для этой колонки
+              // Reset merge for this column
       this.currentVerticalMerge[key] = null;
     }
 
-    // Обычная ячейка без мержа
+            // Regular cell without merge
     const result = this.renderContainer(elem, "td");
 
     this.renderClass(elem, result);
