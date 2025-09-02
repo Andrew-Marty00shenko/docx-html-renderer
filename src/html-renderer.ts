@@ -1089,6 +1089,23 @@ section.${className}>footer { z-index: 1; }
       const result = this.createElement("ol", null, this.renderElements(notes));
       result.id = "footnote";
 
+      result.style.position = "relative";
+      result.style.paddingTop = "10px";
+
+      // Создаем псевдоэлемент с границей
+      const style = document.createElement("style");
+      style.textContent = `
+        #footnote::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 33%;
+        border-top: 1px solid black;
+        }
+        `;
+      document.head.appendChild(style);
+
       into.appendChild(result);
     }
   }
@@ -1573,16 +1590,14 @@ section.${className}>footer { z-index: 1; }
     rows.forEach((row, rowIndex) => {
       const cells = row.querySelectorAll<HTMLTableCellElement>(":scope > td");
 
+      const firstRowFirstCell = rows[0]?.querySelector("td");
+      const hasRowspanAbove = Number(firstRowFirstCell?.rowSpan) > 1 && rowIndex > 0;
+
       cells.forEach((cell, cellIndex) => {
         const nestedTables = cell.querySelectorAll<HTMLTableElement>(":scope > table");
-
         nestedTables.forEach((nestedTable) => {
           this.normalizeTableBorders(nestedTable, deepLevel + 1);
         });
-
-        if (deepLevel === 0) {
-          cell.style.width = "100%";
-        }
 
         if (deepLevel > 0) {
           cell.style.borderTop = "none";
@@ -1591,11 +1606,11 @@ section.${className}>footer { z-index: 1; }
           cell.style.borderLeft = "none";
         }
 
-        if (cellIndex > 0) {
+        if (cellIndex > 0 || (hasRowspanAbove && cellIndex === 0)) {
           cell.style.borderLeft = "0.5pt solid black";
         }
 
-        if (rows.length > 1 && rowIndex !== rows.length - 1) {
+        if (rows.length > 1 && rowIndex !== rows.length - 1 && cell.rowSpan < 2) {
           cell.style.borderBottom = "0.5pt solid black";
         }
       });
@@ -1608,7 +1623,7 @@ section.${className}>footer { z-index: 1; }
       parentTd?.querySelectorAll("p:empty") ?? table.querySelectorAll("p:empty");
 
     emptyParagraphs.forEach((paragraph) => {
-      if (paragraph.textContent.trim() === "" && paragraph.children.length === 0) {
+      if (paragraph.textContent?.trim() === "" && paragraph.children.length === 0) {
         paragraph.remove();
       }
     });
@@ -1712,11 +1727,11 @@ section.${className}>footer { z-index: 1; }
         return null;
       }
     } else {
-              // Reset merge for this column
+      // Reset merge for this column
       this.currentVerticalMerge[key] = null;
     }
 
-            // Regular cell without merge
+    // Regular cell without merge
     const result = this.renderContainer(elem, "td");
 
     this.renderClass(elem, result);
